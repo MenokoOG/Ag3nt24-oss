@@ -1,0 +1,78 @@
+name: CI
+
+# Two jobs. The python job is the four gates carried from the doctrine
+# repository, same order, same commands. The kernel job rebuilds the four
+# COBOL gates and runs the conformance suite; a changed verdict fails the build.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: contracts (ruff, mypy, pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install Python 3.13
+        run: uv python install 3.13
+
+      - name: Sync (locked)
+        # --locked fails rather than silently resolving a different dependency
+        # set than the one committed in uv.lock.
+        run: uv sync --locked
+
+      - name: Format
+        run: uv run ruff format --check .
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Types
+        run: uv run mypy packages
+
+      - name: Tests
+        run: uv run pytest
+
+  kernel:
+    name: kernel (build + conformance)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GnuCOBOL
+        # The port was measured with GnuCOBOL 3.2.0 on Windows. The Ubuntu
+        # package may be a different 3.x; the build manifest records whichever
+        # compiler produced the gates, so a version difference is visible.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnucobol3 || sudo apt-get install -y gnucobol
+          cobc --version
+
+      - name: Install Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Build the kernel
+        run: npm run build:kernel
+
+      - name: Conformance
+        # Must end with "5/5 match". Expectations are never adjusted to pass.
+        run: npm run conform

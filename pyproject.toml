@@ -1,0 +1,67 @@
+[project]
+name = "ag3nt24-workspace"
+version = "0.0.0"
+description = "Workspace root for Ag3nt24. Not published; holds shared tool configuration."
+requires-python = ">=3.13"
+# The root depends on every member so a plain `uv sync` installs them all
+# editable. It is never published.
+dependencies = ["ag3nt24-contracts"]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+ag3nt24-contracts = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14",
+    "pytest>=8.3",
+    "ruff>=0.9",
+]
+
+# --- ruff -------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+# docs/prior-art/a-24 is ended reference material (ADR-0014). It is JavaScript,
+# but it is excluded explicitly so no future tool sweep treats it as source.
+# Prose is not source. ruff format rewrites Python samples inside Markdown, which
+# silently edits ADRs and reviews, so docs/ and ai-code-reviews/ stay out.
+extend-exclude = ["docs", "ai-code-reviews", ".github"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "ANN",  # flake8-annotations: no unannotated public surface
+    "S",    # flake8-bandit
+    "RUF",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ag3nt24_contracts"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert on private behaviour and use `assert`, which S101 flags.
+"**/tests/**" = ["S101", "ANN"]
+
+# --- mypy -------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+disallow_any_explicit = false  # `object` is used at the untyped JSON boundary; Any is not
+warn_unreachable = true
+exclude = ["docs/prior-art"]
+
+# --- pytest -----------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["packages"]
+addopts = "-q --strict-markers --strict-config"

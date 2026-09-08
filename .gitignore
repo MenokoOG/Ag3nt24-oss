@@ -1,0 +1,30 @@
+# Node
+node_modules/
+dist/
+
+# Compiled COBOL gates are build output. BUILD-MANIFEST.json is committed:
+# it records which source hashes produced which binary hashes under which cobc.
+kernel/bin/*.exe
+kernel/bin/*.bin
+!kernel/bin/BUILD-MANIFEST.json
+
+# Conformance fixtures are regenerated from the kernel on every run
+out/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets never travel
+.env
+.env.*
+!.env.example
+
+# OS
+Thumbs.db
+.DS_Store

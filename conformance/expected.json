@@ -1,0 +1,209 @@
+{
+  "schema": "ag3nt24/conformance-expectations/1",
+  "derivedFrom": {
+    "tenetGate": "kernel/tenet_gate.cbl",
+    "runeRotation": "kernel/rune_rotation.cbl",
+    "runeAuthorize": "kernel/rune_authorize.cbl",
+    "tableVerifier": "bridge/rune_table_verify.js",
+    "scenarios": "prior-art/a24-v1/scenarios/"
+  },
+  "derivationNotes": {
+    "reasonOverwrite": "kernel/tenet_gate.cbl evaluates all five tenets unconditionally and each failing tenet MOVEs its own literal into the single DENIAL-REASON field (lines 95, 107, 117, 127, 137). Nothing short-circuits. When several tenets fail, the LAST failure in source order — courtesy, integrity, perseverance, self-control, spirit — is the string that survives into the DISPLAY on line 156. Every DENY reason below is the last failing tenet, not the first.",
+    "allowReason": "On ALLOW, DENIAL-REASON is never written and holds its VALUE SPACES (line 52). DISPLAY emits 'REASON=' plus 80 spaces; bridge/cobol_bridge.js trims, so the observed reason is the empty string.",
+    "resultComposition": "A step's overall result is ALLOW only if every check the step declares passes: the tenet gate (if tenetInput), the table verifier (if verifyTable), and rune authorization (if authInput). Any failure yields DENY.",
+    "authReason": "The authReason convention is declared by the archive itself, in the runner hint comment in prior-art/a24-v1/scenarios/scenario_D_rotation.js lines 28-32: authReason = (authorized ? null : 'NOT_AUTHORIZED_FOR_TODAY')."
+  },
+  "fixtures": {
+    "epochDays": [
+      "20260112",
+      "20260113"
+    ],
+    "sotHash64": "c6f56671348c65aa7dff115f4f2749011ebf43a913a0361bb46f039b3bf2cd58",
+    "why": "The original v1.0.0 seed, recovered 2026-08-16 rather than chosen. It is the literal in test/rotation_real_test.js, test/rotation_attack_test.js and test/rotation_permutation_verify_test.js of the v1.0.0 repo — the tests that generated the fixtures still sitting in that repo's out/ directory.",
+    "BASELINE_CONFIRMED": "With this seed the rebuilt Windows rune_rotation.exe reproduces the original v1.0.0 rune tables for BOTH epoch days BYTE-IDENTICALLY, SIG lines included, checked against the surviving fixtures written by the original Linux rune_rotation.bin. That is a captured-baseline match, not a source-derived expectation: for the rotation gate the Windows rebuild is observationally identical to the Linux original. The gate reads the seed only as the sum of its hex digit values (rune_rotation.cbl lines 60-71), so any 64-hex string summing to 460 reproduces these tables — but the literal above is the actual original.",
+    "authInputCorrections": {
+      "why": "The carried scenarios A and D step 0 request capability 9 for rune 1. That pair is stale, and the git history of the v1.0.0 repo shows exactly how it went stale. Commit 5f9de4b (2026-01-12, 'success-proven theory') checked in out/rune_table_20260112.csv as a uniform +8 cyclic shift — rune n maps to capability n+8, so rune 1 held capability 9. That is a hand-written placeholder, not shuffle output, and it was committed in the very commit that first introduced rune_rotation.cbl, so it was never regenerated from the kernel it shipped beside. Commit 959bd59 (2026-07-02, 'freeze: kernel candidate for v1.0.0') replaced it with genuine COBOL rotation output, in which rune 1 holds capability 23 and rune 3 holds capability 9. The scenarios were not updated, and nothing caught it because the scenario runner was never re-run after the freeze — docs/Testing, Validation, and Results.md records scenario A as ALLOW, and that record predates the freeze.",
+      "decision": "callerRune stays 1 and capabilityId moves 9 -> 23, which is the capability rune 1 actually holds on day 20260112 under the real rotation. Rotation is the capability moving between runes, so holding the actor fixed and updating the capability is the correction that preserves the scenario's meaning. (3, 9) would also satisfy both days and is the equally valid alternative; it was not chosen because it changes which actor the scenario is about.",
+      "verified": "Against the real rotation tables: (1,23) authorizes on 20260112 and is denied on 20260113, so scenario D's day1-allow / day2-deny contrast is preserved. The stale (1,9) is denied on BOTH days, which is why it could never have produced the ALLOW the scenario declares.",
+      "archiveUntouched": "prior-art/a24-v1/scenarios/ is the archive of record and is not edited. The correction is applied by conformance/run.js at load time and announced on every run, so the divergence between the archive and what is executed is visible rather than silent.",
+      "byScenarioStep": {
+        "A_VALID/0": {
+          "from": {
+            "callerRune": 1,
+            "capabilityId": 9
+          },
+          "to": {
+            "callerRune": 1,
+            "capabilityId": 23
+          }
+        },
+        "D_ROTATION/0": {
+          "from": {
+            "callerRune": 1,
+            "capabilityId": 9
+          },
+          "to": {
+            "callerRune": 1,
+            "capabilityId": 23
+          }
+        }
+      }
+    },
+    "tamper": {
+      "sourceTable": "out/rune_table_20260112.csv",
+      "outputTable": "out/rune_table_20260112_TAMPERED.csv",
+      "mutation": "The final byte of the first mapping line (the low digit of its capability) is replaced with a different digit — '0' becomes '1', anything else becomes '0'. Exactly one byte changes.",
+      "why": "Keeps the line matching /^(\\d{2}),(\\d{2})$/ so bridge/rune_table_verify.js gets past line-shape parsing and fails on the signature comparison specifically, which is the tamper the scenario is about."
+    }
+  },
+  "scenarios": {
+    "A_VALID": {
+      "sourceFile": "prior-art/a24-v1/scenarios/scenario_A_valid.js",
+      "steps": [
+        {
+          "index": 0,
+          "name": "Valid proposal from SOT",
+          "result": "ALLOW",
+          "tenet": {
+            "decision": "A",
+            "allow": true,
+            "reason": "",
+            "why": "All five tenets pass. Courtesy: sourceDomain and targetDomain are both 'SOT', so SOURCE-DOMAIN = TARGET-DOMAIN after padding and line 90 sets COURTESY-OK. Integrity: hasProvenance and provenanceMatch are both true, so line 103-105 sets INTEGRITY-OK. Perseverance: retryCount 0 <= maxRetries 3, line 115. Self-control: withinQuota true, line 125. Spirit: anomalyDetected false so ANOMALY-DETECTED = 'N', line 135. Line 144-149 requires all five and yields DECISION=A."
+          },
+          "tableVerify": {
+            "path": "out/rune_table_20260112.csv",
+            "ok": true,
+            "reason": "OK",
+            "why": "The table is written by bridge/rune_table_writer.js, which emits 24 sorted 'RR,CC' lines plus a SIG line whose payload is sha256 of those 24 lines and a trailing newline, then self-verifies before returning. bridge/rune_table_verify.js recomputes the same canonical hash and checks the mappings are a true permutation of 1..24, which rune_rotation.cbl guarantees by construction (identity fill on lines 77-79, then in-place Fisher-Yates swaps on lines 84-91 — a swap sequence cannot introduce or drop a value)."
+          },
+          "auth": {
+            "callerRune": 1,
+            "capabilityId": 23,
+            "authorized": true,
+            "authReason": null,
+            "why": "CORRECTED FIXTURE. The scenario's stale (rune 1, capability 9) is applied as (rune 1, capability 23) - see fixtures.authInputCorrections. Rune 1 holds capability 23 on day 20260112 under the real COBOL rotation, so the request authorizes and scenario A is the ALLOW case canon says it is. rune_authorize.cbl scans the CSV and defaults to deny (line 64); it finds the 01,23 row and emits AUTHORIZED=Y."
+          }
+        }
+      ]
+    },
+    "B_DRIFT": {
+      "sourceFile": "prior-art/a24-v1/scenarios/scenario_B_drift.js",
+      "steps": [
+        {
+          "index": 0,
+          "name": "Drifted provenance submission",
+          "result": "DENY",
+          "tenet": {
+            "decision": "D",
+            "allow": false,
+            "reason": "INDOMITABLE SPIRIT: FAIL-CLOSED",
+            "why": "Three tenets fail. Courtesy fails first: sourceDomain 'USERLAND' differs from targetDomain 'SOT' and hasContract is false, so line 95 writes 'COURTESY VIOLATION: NO CONTRACT'. Integrity fails next: provenanceMatch is false, so line 107 overwrites with 'INTEGRITY VIOLATION: PROVENANCE INVALID'. Perseverance passes (0 <= 3) and self-control passes (withinQuota true), so neither writes. Spirit fails last: anomalyDetected is true so ANOMALY-DETECTED = 'Y', the test on line 134 fails and line 137 overwrites with 'INDOMITABLE SPIRIT: FAIL-CLOSED'. That is the last write, so that is the reported reason. This is the case the suite exists to catch: an implementation reporting the FIRST failure would say 'COURTESY VIOLATION: NO CONTRACT', still return DENY, and still look correct."
+          }
+        }
+      ]
+    },
+    "C_RETRY": {
+      "sourceFile": "prior-art/a24-v1/scenarios/scenario_C_retry.js",
+      "steps": [
+        {
+          "index": 0,
+          "name": "Retry attempt 1",
+          "result": "DENY",
+          "tenet": {
+            "decision": "D",
+            "allow": false,
+            "reason": "INTEGRITY VIOLATION: PROVENANCE INVALID",
+            "why": "Two tenets fail. Courtesy fails: 'USERLAND' differs from 'SOT' and hasContract is false, so line 95 writes its literal. Integrity fails: hasProvenance is false, so the AND on lines 103-104 fails and line 107 overwrites with 'INTEGRITY VIOLATION: PROVENANCE INVALID'. Perseverance PASSES — retryCount 1 <= maxRetries 1, the test on line 114 is <= not <, so 'retry 1 of 1' is still within budget and writes nothing. Self-control passes and spirit passes. Integrity is therefore the last write."
+          }
+        },
+        {
+          "index": 1,
+          "name": "Retry attempt 2 (exceeds)",
+          "result": "DENY",
+          "tenet": {
+            "decision": "D",
+            "allow": false,
+            "reason": "PERSEVERANCE VIOLATION: RETRIES EXCEEDED",
+            "why": "Three tenets fail. Courtesy and integrity fail exactly as in step 0. Perseverance now fails too: retryCount 2 > maxRetries 1, so line 117 overwrites with 'PERSEVERANCE VIOLATION: RETRIES EXCEEDED'. Self-control passes (withinQuota true) and spirit passes (anomalyDetected false), so neither overwrites. Perseverance is the last write. Note the raw fields are '02' and '01', both pass the IS NUMERIC guard on lines 74 and 80, so no fallback to 99/0 occurs."
+          }
+        }
+      ]
+    },
+    "D_ROTATION": {
+      "sourceFile": "prior-art/a24-v1/scenarios/scenario_D_rotation.js",
+      "steps": [
+        {
+          "index": 0,
+          "name": "Day 1 request (allowed)",
+          "result": "ALLOW",
+          "declaredByScenario": {
+            "result": "ALLOW"
+          },
+          "tenet": {
+            "decision": "A",
+            "allow": true,
+            "reason": "",
+            "why": "Identical tenetInput to scenario A step 0: SOT to SOT with a contract, provenance present and matching, 0 of 3 retries, within quota, no anomaly. All five tenets pass and line 149 yields DECISION=A. The tenet gate is not what distinguishes day 1 from day 2 in this scenario — rotation is."
+          },
+          "tableVerify": {
+            "path": "out/rune_table_20260112.csv",
+            "ok": true,
+            "reason": "OK",
+            "why": "Same day-1 table as scenario A step 0, written and self-verified by the writer."
+          },
+          "auth": {
+            "callerRune": 1,
+            "capabilityId": 23,
+            "authorized": true,
+            "authReason": null,
+            "why": "CORRECTED FIXTURE, the same correction as A_VALID/0 - see fixtures.authInputCorrections. With (rune 1, capability 23) the day-1 request authorizes, which is what the scenario's own expect block declares. Day 2 then denies the identical request because rune 1 holds capability 10 on 20260113, which is the rotation contrast the scenario exists to demonstrate."
+          }
+        },
+        {
+          "index": 1,
+          "name": "Day 2 same request (denied by rotation)",
+          "result": "DENY",
+          "declaredByScenario": {
+            "result": "DENY",
+            "authReason": "NOT_AUTHORIZED_FOR_TODAY"
+          },
+          "tenet": {
+            "decision": "A",
+            "allow": true,
+            "reason": "",
+            "why": "The tenetInput is byte-for-byte the same request as step 0, so the gate must reach the same verdict — the tenet gate is a pure function of its 89-character record and carries no day state. The DENY comes from rotation, not from the tenets. Pinning ALLOW here rather than only pinning the step result is the point: it proves the denial came from the rotation table and not from a tenet drifting."
+          },
+          "tableVerify": {
+            "path": "out/rune_table_20260113.csv",
+            "ok": true,
+            "reason": "OK",
+            "why": "The day-2 table is validly written and signed. It must VERIFY — this scenario is about rotation denying an unrotated capability claim, not about a broken table. A verifier failure here would be a different bug wearing the same verdict."
+          },
+          "auth": {
+            "callerRune": 1,
+            "capabilityId": 9,
+            "authorized": false,
+            "authReason": "NOT_AUTHORIZED_FOR_TODAY",
+            "why": "Declared by the scenario's expect block. rune_rotation.cbl seeds its PRNG from EPOCH-DAY plus the seed hash sum (lines 70-71), so day 20260113 produces a different permutation than 20260112 and the rune-1-to-capability-9 pairing does not survive the day boundary. rune_authorize.cbl scans the CSV and defaults to deny (line 64), emitting AUTHORIZED=N when no line matches."
+          }
+        }
+      ]
+    },
+    "E_TAMPER": {
+      "sourceFile": "prior-art/a24-v1/scenarios/scenario_E_tamper.js",
+      "steps": [
+        {
+          "index": 0,
+          "name": "Tampered table usage",
+          "result": "DENY",
+          "tableVerify": {
+            "path": "out/rune_table_20260112_TAMPERED.csv",
+            "ok": false,
+            "reason": "SIG_MISMATCH",
+            "why": "One byte of a mapping line is changed while the SIG line is left intact. bridge/rune_table_verify.js recomputes sha256 over the 24 mapping lines plus trailing newline and compares against the SIG payload (lines 92-103); the recomputed hash no longer matches, so parseRuneTableFile returns SIG_MISMATCH. That check runs BEFORE verifyPermutation — verifyRuneTable returns early on line 146 — so SIG_MISMATCH is the reason even though the mutated table is also no longer a permutation. The step declares no authInput, so the failed verification alone is the DENY."
+          }
+        }
+      ]
+    }
+  }
+}

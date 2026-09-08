@@ -1,0 +1,14 @@
+{
+  "name": "ag3nt24",
+  "version": "0.1.0",
+  "description": "Ag3nt24 Droid Protocol Multi-Agent Framework with Anti-Corruption Layer: a legacy AI systems modernization framework.",
+  "license": "Apache-2.0",
+  "repository": "github:MenokoOG/Ag3nt24-oss",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build:kernel": "node scripts/build-kernel.js",
+    "conform": "node conformance/run.js"
+  }
+}
