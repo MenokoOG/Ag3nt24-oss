@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build:kernel": "node scripts/build-kernel.js",
-    "conform": "node conformance/run.js"
+    "conform": "node conformance/run.js",
+    "serve:kernel": "node bridge/shim.js"
   }
 }
