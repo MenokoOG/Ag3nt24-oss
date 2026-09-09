@@ -1,9 +1,10 @@
 # ADR-0015: Domain-role roster for patterns 2 through 24
 
-- Status: **Open. Needs a ruling from Lawrence**
+- Status: Accepted. Ruled 2026-09-09
 - Date: 2026-08-28
-- Related: ADR-0002 (fixes the count and the index), ADR-0014
-- Blocks: charter authoring, ADR-0016, ADR-0019
+- Deciders: Lawrence Jefferson II
+- Related: ADR-0002 (fixes the count and the index), ADR-0014, ADR-0025, ADR-0026
+- Unblocks: charter authoring, ADR-0019
 
 ## Context
 
@@ -13,7 +14,7 @@ The roster is not cosmetic. It determines which specialist is in the room for a 
 
 Constraints that apply: no personal or business philosophy in role definitions, industry-standard domain naming only, and every role has to earn its slot on legacy modernization work specifically.
 
-## Proposed roster
+## Roster
 
 | # | Pattern | Domain role | Primary accountability |
 |---|---|---|---|
@@ -26,7 +27,7 @@ Constraints that apply: no personal or business philosophy in role definitions, 
 | 07 | Toi-Gye | Knowledge Management | Corpus curation, documentation systems, per-role RAG namespace hygiene |
 | 08 | Hwa-Rang | Program and Delivery Coordination | Sequencing, dependency management, preventing duplicated agent work |
 | 09 | Choong-Moo | Reliability Engineering | Failure modes, degraded operation, error budgets |
-| 10 | Kwang-Gae | Cloud Platform and Infrastructure | AWS, infrastructure as code, networking, AgentCore surface |
+| 10 | Kwang-Gae | Cloud and Container Platform | Docker, infrastructure as code, networking, deploy targets |
 | 11 | Po-Eun | Interface and Contract Governance | API contracts, SLAs, provenance, compatibility rules |
 | 12 | Ge-Baek | Test Engineering | Test strategy, parity harnesses, coverage of the change under review |
 | 13 | Eui-Am | Cost Engineering and FinOps | Budget envelope, unit economics, per-run cost ceilings |
@@ -42,7 +43,7 @@ Constraints that apply: no personal or business philosophy in role definitions, 
 | 23 | Se-Jong | Data Standards and Canonical Schema | Canonical formats, field naming, serialization, hash input |
 | 24 | Tong-Il | Integration and Synthesis | Reconciling cross-domain findings into one proposal for the gate |
 
-## Notes on the proposal
+## Notes on the roster
 
 About half of these keep the spirit of the duty the same name carried in the prior a-24 doctrine (ADR-0014). Se-Jong stays canonical schema. Tong-Il stays synthesis. So-San stays recovery. Toi-Gye stays knowledge custody. Eui-Am stays resource and budget. Ul-Ji stays adversarial. That continuity is convenient, and it is not a requirement.
 
@@ -60,6 +61,8 @@ Slots worth a second look before ruling:
 **Option B: accept the structure, change specific assignments.** Name which slots move and to what.
 **Option C: derive the roster from Pilot 1 instead.** Assign only the roles Pilot 1 actually needs (likely 01, 02, 03, 23, 24 plus the gate), and fill the rest from observed gaps.
 
-## Recommendation
+## Ruling (2026-09-09)
 
-**Option C for charter authoring, Option A for the index.** Freeze all 24 names and slot numbers now, because tags, cost attribution, and receipts depend on them. Write charters only for the roles Pilot 1 uses. An unimplemented role with no charter is honest; a charter written for a role nobody has exercised is fiction.
+**Option A for the index, Option C for charter authoring.** All 24 names, slot numbers and domain roles above are frozen as written, with one wording change from the 2026-08-28 proposal: slot 10 reads Cloud and Container Platform, since ADR-0025 replaced the AWS target with Docker. Charters are written only for the roles an operation actually uses, starting with Chon-Ji (01).
+
+The original recommendation, kept for the record: Freeze all 24 names and slot numbers now, because tags, cost attribution, and receipts depend on them. Write charters only for the roles Pilot 1 uses. An unimplemented role with no charter is honest; a charter written for a role nobody has exercised is fiction.

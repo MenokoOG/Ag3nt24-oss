@@ -1,6 +1,6 @@
 # ADR-0020: Reconcile the HADES build prompts with the ADR spine
 
-- Status: **Accepted**
+- Status: Accepted. Amended by ADR-0027 (2026-09-09): HADES is the control room, wider than data-only. The ACL and the taxonomy stand.
 - Date: 2026-09-05
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0006, ADR-0008, ADR-0010, ADR-0011, ADR-0012, ADR-0014, ADR-0016

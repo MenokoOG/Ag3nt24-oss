@@ -7,6 +7,10 @@
 
 ---
 
+## Rulings of 2026-09-09
+
+This overview is the 2026-08-28 design and is kept as the record of it. ADR-0025 superseded its stack (LangGraph, AgentCore, Bedrock, CloudWatch) with Docker and a model-agnostic adapter; ADR-0023 placed the COBOL kernel as the ACL; ADR-0024 added scouts; ADR-0027 made HADES the control room. The current design is `docs/plan/2026-09-09-ag3nt24-hades-plan.md`. Read the sections below for the run flow, the gate, the receipt chain and the node contract, which stand; read the plan for everything about where it runs.
+
 ## As-built status (2026-09-05, second update)
 
 Read this before anything else in the document.
@@ -14,7 +18,7 @@ Read this before anything else in the document.
 - **Implemented agents: 0.** Twenty-four roles are specified in ADR-0002 and proposed in ADR-0015. None are built.
 - **Implemented Python:** `ag3nt24_contracts.canonical` only — the canonical serializer and evidence hash (P1-10). No models, no graph, no control plane.
 - **What is in this repository today:** design documents only. The prior-phase a-24 JavaScript moved to `docs/prior-art/a-24/` on 2026-09-05 and is ended, not built and not imported (ADR-0014). Its slot order does not apply here.
-- **Open decisions blocking implementation:** ADR-0015 through ADR-0019. ADR-0014 is ruled.
+- **Open decisions:** ADR-0017, ADR-0018, ADR-0019. ADR-0014, ADR-0015 and ADR-0016 are ruled.
 
 Everything below is the design. Treat it as specification, not capability.
 
@@ -163,9 +167,10 @@ Signing keys for receipts are production secrets with a rotation policy. Never i
 
 ## Decision index
 
-**Accepted:** ADR-0001 through ADR-0014, ADR-0016, and ADR-0020.
-**Open, needs a ruling:** ADR-0015 (role roster), ADR-0017 (route list), ADR-0018 (tagging), ADR-0019 (Pilot 1 scope).
+**Accepted:** ADR-0001, 0002, 0006, 0008, 0010 through 0016, 0020 through 0027.
+**Superseded by ADR-0025:** ADR-0003, 0004, 0005, 0007, 0009.
+**Open, needs a ruling:** ADR-0017 (route list), ADR-0018 (tagging), ADR-0019 (Pilot 1 scope).
 
 ADR-0020 reconciles the 2026-09-04 HADES build prompts with this design: the ACL, HADES, and the Data Lake sort taxonomy become named subsystems, and Talk/Protocol/Droid/Report becomes vocabulary for the run flow above rather than a second pipeline.
 
-Full text in [docs/adr/](../adr/). Pilot 1 sequencing in [docs/plan/pilot-1-task-breakdown.md](../plan/pilot-1-task-breakdown.md).
+Full text in [docs/adr/](../adr/). Build sequencing in [docs/plan/2026-09-09-ag3nt24-hades-plan.md](../plan/2026-09-09-ag3nt24-hades-plan.md).

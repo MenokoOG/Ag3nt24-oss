@@ -1,6 +1,6 @@
 # ADR-0005: Tool access is MCP through AgentCore Gateway, using existing open-source servers
 
-- Status: Accepted
+- Status: Superseded by ADR-0025 (2026-09-09). MCP stays; the Gateway does not. Text unchanged.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0004, ADR-0008
