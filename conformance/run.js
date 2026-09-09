@@ -285,8 +285,9 @@ function compare(expected, actual) {
 // Reporting
 // ---------------------------------------------------------------------------
 
-function renderTable(rows) {
-  const headers = ['SCENARIO', 'STEP', 'CHECK', 'EXPECTED', 'ACTUAL', 'RESULT'];
+const SCENARIO_HEADERS = ['SCENARIO', 'STEP', 'CHECK', 'EXPECTED', 'ACTUAL', 'RESULT'];
+
+function renderTable(rows, headers = SCENARIO_HEADERS) {
   const widths = headers.map((h, i) =>
     Math.max(h.length, ...rows.map(r => String(r[i]).length))
   );
@@ -372,6 +373,202 @@ function reportMismatch(scenarioName, stepSpec, expected, actual, mismatches) {
 }
 
 // ---------------------------------------------------------------------------
+// Registry and translation — Phase 2, ADR-0026
+//
+// Phase 1 proved the rebuilt gates reach the same verdicts the originals did.
+// That says nothing about whether the numbers handed to them mean what the
+// caller thinks they mean. The kernel numbers the 24 in the v1.0.0 order and
+// everything else in this framework numbers them in ITF syllabus order; the two
+// coincide in exactly one slot, Hwa-Rang at 8. An off-by-one-order bug would
+// route a request to the wrong pattern and still come back with a clean verdict.
+// These two checks are what closes that gap.
+//
+// Print discipline, from ADR-0026: a rune number is a kernel-side identifier
+// and nothing else. It appears only in the RUNE and CAP columns of the two
+// tables below, which are the translation columns. No other line printed by
+// this file contains one, failure lines included — a failure names ITF slots
+// and pattern names, and says a rune mismatched without printing it. A reviewer
+// who finds a rune number anywhere else has found a bug.
+// ---------------------------------------------------------------------------
+
+const {
+  loadRegistry,
+  slotForRune,
+  patternForSlot
+} = require('../bridge/slot_translation');
+
+const REGISTRY_HEADERS = ['ITF', 'PATTERN', 'DOMAIN', 'RUNE', 'RESULT'];
+const JOIN_HEADERS = [
+  'RUNE', 'CAP', 'ITF', 'ACTOR PATTERN', 'ITF', 'HOLDS CAPABILITY OF', 'RESULT'
+];
+
+const pad2 = n => String(n).padStart(2, '0');
+
+// The 24 slots, each row checked against the hand-derived pin.
+function checkRegistry() {
+  // Throws unless the table is 24 entries, slots 1..24 contiguous, runes a
+  // bijection onto 1..24, no repeated key or pattern.
+  const registry = loadRegistry();
+
+  const pinned = (EXPECTED.registry || {}).slots;
+  if (!Array.isArray(pinned) || pinned.length !== 24) {
+    throw new Error(
+      'expected.json has no registry.slots block with 24 rows. The registry is ' +
+      'checked against a pin derived by hand from ADR-0002, ADR-0015 and ' +
+      'ADR-0026, not against itself.'
+    );
+  }
+
+  const rows = [];
+  const failures = [];
+
+  for (const want of pinned) {
+    const got = registry.bySlot.get(want.slot);
+    const reasons = [];
+
+    if (!got) {
+      reasons.push(`ITF slot ${pad2(want.slot)} is missing from the registry`);
+    } else {
+      if (got.pattern !== want.pattern) {
+        reasons.push(`pattern is ${got.pattern}, pinned ${want.pattern}`);
+      }
+      if (got.key !== want.key) {
+        reasons.push(`key is ${got.key}, pinned ${want.key}`);
+      }
+      if (got.domain !== want.domain) {
+        reasons.push(`domain is ${JSON.stringify(got.domain)}, pinned ${JSON.stringify(want.domain)}`);
+      }
+      if (got.rune !== want.rune) {
+        // Deliberately not printed. See the print discipline note above.
+        reasons.push('the rune translation does not match the pinned ADR-0026 table');
+      }
+    }
+
+    rows.push([
+      pad2(want.slot),
+      got ? got.pattern : '(missing)',
+      got ? got.domain : '(missing)',
+      got ? pad2(got.rune) : '--',
+      reasons.length ? 'FAIL' : 'PASS'
+    ]);
+
+    if (reasons.length) failures.push({ slot: want.slot, pattern: want.pattern, reasons });
+  }
+
+  return { rows, failures };
+}
+
+// The kernel's own day-20260112 rotation table, read back through the
+// translation. Both columns are v1 numbers: the left is a rune, the right is a
+// v1 capability slot, and capability n is owned by the pattern in v1 slot n.
+function checkJoin() {
+  const tablePath = path.join(OUT_DIR, 'rune_table_20260112.csv');
+  const relative = path.relative(REPO_ROOT, tablePath);
+  const text = fs.readFileSync(tablePath, 'utf8');
+
+  const pairs = [];
+  for (const raw of text.split(/\r?\n/)) {
+    const trimmed = raw.trim();
+    if (!trimmed || trimmed.startsWith('SIG,')) continue;
+    const m = /^(\d{2}),(\d{2})$/.exec(trimmed);
+    if (!m) throw new Error(`${relative}: cannot parse mapping line ${JSON.stringify(trimmed)}`);
+    pairs.push([Number(m[1]), Number(m[2])]);
+  }
+  if (pairs.length !== 24) {
+    throw new Error(`${relative}: expected 24 mapping lines, found ${pairs.length}`);
+  }
+
+  const pinned = (EXPECTED.registry || {}).joinDay20260112;
+  if (!Array.isArray(pinned) || pinned.length !== 24) {
+    throw new Error('expected.json has no registry.joinDay20260112 block with 24 rows');
+  }
+
+  const rows = [];
+  const failures = [];
+  const actorSlots = new Set();
+  const capabilitySlots = new Set();
+
+  pairs.forEach(([rune, capability], index) => {
+    const actor = patternForSlot(slotForRune(rune));
+    const owner = patternForSlot(slotForRune(capability));
+
+    // A repeat on either side means the rotation table is not a permutation of
+    // the 24, or the translation is not a bijection. Either way the resolved
+    // table is meaningless and there is nothing to compare.
+    if (actorSlots.has(actor.slot)) {
+      throw new Error(
+        `${relative}: ITF slot ${pad2(actor.slot)} ${actor.pattern} appears twice on the actor side`
+      );
+    }
+    if (capabilitySlots.has(owner.slot)) {
+      throw new Error(
+        `${relative}: ITF slot ${pad2(owner.slot)} ${owner.pattern} appears twice on the capability side`
+      );
+    }
+    actorSlots.add(actor.slot);
+    capabilitySlots.add(owner.slot);
+
+    const want = pinned[index];
+    const reasons = [];
+
+    if (want.rune !== rune || want.capability !== capability) {
+      reasons.push('the regenerated rotation table row is not the pinned one');
+    }
+    if (want.actorSlot !== actor.slot || want.actorPattern !== actor.pattern) {
+      reasons.push(
+        `actor resolves to ITF slot ${pad2(actor.slot)} ${actor.pattern}, ` +
+        `pinned ITF slot ${pad2(want.actorSlot)} ${want.actorPattern}`
+      );
+    }
+    if (want.capabilitySlot !== owner.slot || want.capabilityPattern !== owner.pattern) {
+      reasons.push(
+        `capability resolves to ITF slot ${pad2(owner.slot)} ${owner.pattern}, ` +
+        `pinned ITF slot ${pad2(want.capabilitySlot)} ${want.capabilityPattern}`
+      );
+    }
+
+    rows.push([
+      pad2(rune),
+      pad2(capability),
+      pad2(actor.slot),
+      actor.pattern,
+      pad2(owner.slot),
+      owner.pattern,
+      reasons.length ? 'FAIL' : 'PASS'
+    ]);
+
+    if (reasons.length) failures.push({ index, reasons });
+  });
+
+  if (actorSlots.size !== 24) {
+    throw new Error(`${relative}: only ${actorSlots.size} distinct ITF slots on the actor side, expected 24`);
+  }
+  if (capabilitySlots.size !== 24) {
+    throw new Error(`${relative}: only ${capabilitySlots.size} distinct ITF slots on the capability side, expected 24`);
+  }
+
+  return { rows, failures };
+}
+
+function reportTranslationFailures(label, failures) {
+  console.error('');
+  console.error('='.repeat(78));
+  console.error(`TRANSLATION CHANGED — ${label}`);
+  console.error('='.repeat(78));
+  console.error('');
+  console.error('The pin in expected.json was derived by hand from ADR-0002, ADR-0015 and');
+  console.error('ADR-0026. It is not to be adjusted to make this pass.');
+  console.error('');
+  for (const f of failures) {
+    const where = f.pattern
+      ? `ITF slot ${pad2(f.slot)} ${f.pattern}`
+      : `row ${f.index + 1}`;
+    console.error(`  ${where}`);
+    for (const reason of f.reasons) console.error(`    ${reason}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -427,6 +624,26 @@ function main() {
   console.log(renderTable(rows));
   console.log('');
 
+  // --- Phase 2: registry and translation -----------------------------------
+
+  console.log('Registry — 24 ITF slots (ADR-0002 order, ADR-0015 domains, ADR-0026 translation):');
+  const registryResult = checkRegistry();
+  console.log(renderTable(registryResult.rows, REGISTRY_HEADERS));
+  console.log('');
+  const registryTotal = registryResult.rows.length;
+  const registryPassed = registryResult.rows.filter(r => r[r.length - 1] === 'PASS').length;
+  checksTotal += registryTotal;
+  checksPassed += registryPassed;
+
+  console.log('Kernel rotation table, epoch day 20260112, resolved to ITF patterns:');
+  const joinResult = checkJoin();
+  console.log(renderTable(joinResult.rows, JOIN_HEADERS));
+  console.log('');
+  const joinTotal = joinResult.rows.length;
+  const joinPassed = joinResult.rows.filter(r => r[r.length - 1] === 'PASS').length;
+  checksTotal += joinTotal;
+  checksPassed += joinPassed;
+
   const scenariosTotal = SCENARIO_FILES.length;
   const scenariosFailed = new Set(failures.map(f => f.scenario)).size;
   const scenariosMatched = scenariosTotal - scenariosFailed;
@@ -434,15 +651,31 @@ function main() {
   for (const f of failures) {
     reportMismatch(f.scenario, f.stepSpec, f.expected, f.actual, f.mismatches);
   }
+  if (registryResult.failures.length > 0) {
+    reportTranslationFailures('registry, 24 ITF slots', registryResult.failures);
+  }
+  if (joinResult.failures.length > 0) {
+    reportTranslationFailures('kernel rotation table for epoch day 20260112', joinResult.failures);
+  }
 
   console.log(`checks:    ${checksPassed}/${checksTotal} match`);
   console.log(`scenarios: ${scenariosMatched}/${scenariosTotal} match`);
+  console.log(`registry: ${registryPassed}/${registryTotal} match`);
+  console.log(`join: ${joinPassed}/${joinTotal} match`);
   console.log('');
   console.log(`${scenariosMatched}/${scenariosTotal} match`);
+
+  const translationFailed =
+    registryResult.failures.length > 0 || joinResult.failures.length > 0;
 
   if (failures.length > 0) {
     console.log('');
     console.log('CONFORMANCE FAILED — the port does not reproduce the pinned verdicts.');
+    process.exit(1);
+  }
+  if (translationFailed) {
+    console.log('');
+    console.log('CONFORMANCE FAILED — the translation does not reproduce the pinned slots.');
     process.exit(1);
   }
 
