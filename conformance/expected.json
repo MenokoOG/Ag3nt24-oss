@@ -205,5 +205,424 @@
         }
       ]
     }
+  },
+  "registry": {
+    "why": "Phase 2 pins two things. First, the 24-slot registry itself: ITF slot, pattern name, domain role, and the rune number the slot translates to. Second, the day-20260112 rotation table read back through that translation, so the kernel's table stops being 24 anonymous number pairs and becomes a statement about which ITF pattern holds which ITF pattern's capability on that day. Both were derived by hand from ADR-0002, ADR-0015 and ADR-0026 and are not generated output. If a run disagrees with a row here, the code is wrong until proven otherwise.",
+    "derivedFrom": {
+      "slots": "docs/adr/0002-24-role-team-one-per-itf-pattern.md (slots and pattern names), docs/adr/0015-domain-role-roster-for-patterns-2-24.md (domain roles, frozen by the 2026-09-09 ruling), docs/adr/0026-itf-slot-order-with-rune-translation.md (rune numbers)",
+      "joinDay20260112": "out/rune_table_20260112.csv, regenerated from kernel/rune_rotation.cbl on every run, with both columns put through the ADR-0026 table by hand. The rune-01-holds-capability-23 row is the same pair ADR-0021 records as the v1.0.0 freeze value, which is what identifies this as the day-20260112 table."
+    },
+    "slots": [
+      {
+        "slot": 1,
+        "pattern": "Chon-Ji",
+        "key": "CHON_JI",
+        "domain": "Systems Architecture (incl. electrical / OT-SCADA)",
+        "rune": 22,
+        "why": "ADR-0002 puts Chon-Ji at ITF slot 01 in syllabus order. ADR-0015 assigns it Systems Architecture (incl. electrical / OT-SCADA). ADR-0026 translates ITF slot 01 to rune 22, and prior-art/a24-v1/tkd-24/pattern_id.js lists CHON_JI at v1 slot 22, which is the cross-check."
+      },
+      {
+        "slot": 2,
+        "pattern": "Dan-Gun",
+        "key": "DAN_GUN",
+        "domain": "Legacy Code Archaeology",
+        "rune": 24,
+        "why": "ADR-0002 puts Dan-Gun at ITF slot 02 in syllabus order. ADR-0015 assigns it Legacy Code Archaeology. ADR-0026 translates ITF slot 02 to rune 24, and prior-art/a24-v1/tkd-24/pattern_id.js lists DAN_GUN at v1 slot 24, which is the cross-check."
+      },
+      {
+        "slot": 3,
+        "pattern": "Do-San",
+        "key": "DO_SAN",
+        "domain": "Data Engineering and Migration",
+        "rune": 5,
+        "why": "ADR-0002 puts Do-San at ITF slot 03 in syllabus order. ADR-0015 assigns it Data Engineering and Migration. ADR-0026 translates ITF slot 03 to rune 05, and prior-art/a24-v1/tkd-24/pattern_id.js lists DO_SAN at v1 slot 5, which is the cross-check."
+      },
+      {
+        "slot": 4,
+        "pattern": "Won-Hyo",
+        "key": "WON_HYO",
+        "domain": "Requirements and Domain Modeling",
+        "rune": 18,
+        "why": "ADR-0002 puts Won-Hyo at ITF slot 04 in syllabus order. ADR-0015 assigns it Requirements and Domain Modeling. ADR-0026 translates ITF slot 04 to rune 18, and prior-art/a24-v1/tkd-24/pattern_id.js lists WON_HYO at v1 slot 18, which is the cross-check."
+      },
+      {
+        "slot": 5,
+        "pattern": "Yul-Gok",
+        "key": "YUL_GOK",
+        "domain": "Formal Methods and Verification",
+        "rune": 6,
+        "why": "ADR-0002 puts Yul-Gok at ITF slot 05 in syllabus order. ADR-0015 assigns it Formal Methods and Verification. ADR-0026 translates ITF slot 05 to rune 06, and prior-art/a24-v1/tkd-24/pattern_id.js lists YUL_GOK at v1 slot 6, which is the cross-check."
+      },
+      {
+        "slot": 6,
+        "pattern": "Joong-Gun",
+        "key": "JOONG_GUN",
+        "domain": "Security Engineering",
+        "rune": 9,
+        "why": "ADR-0002 puts Joong-Gun at ITF slot 06 in syllabus order. ADR-0015 assigns it Security Engineering. ADR-0026 translates ITF slot 06 to rune 09, and prior-art/a24-v1/tkd-24/pattern_id.js lists JOONG_GUN at v1 slot 9, which is the cross-check."
+      },
+      {
+        "slot": 7,
+        "pattern": "Toi-Gye",
+        "key": "TOI_GYE",
+        "domain": "Knowledge Management",
+        "rune": 12,
+        "why": "ADR-0002 puts Toi-Gye at ITF slot 07 in syllabus order. ADR-0015 assigns it Knowledge Management. ADR-0026 translates ITF slot 07 to rune 12, and prior-art/a24-v1/tkd-24/pattern_id.js lists TOI_GYE at v1 slot 12, which is the cross-check."
+      },
+      {
+        "slot": 8,
+        "pattern": "Hwa-Rang",
+        "key": "HWA_RANG",
+        "domain": "Program and Delivery Coordination",
+        "rune": 8,
+        "why": "ADR-0002 puts Hwa-Rang at ITF slot 08 in syllabus order. ADR-0015 assigns it Program and Delivery Coordination. ADR-0026 translates ITF slot 08 to rune 08, and prior-art/a24-v1/tkd-24/pattern_id.js lists HWA_RANG at v1 slot 8, which is the cross-check."
+      },
+      {
+        "slot": 9,
+        "pattern": "Choong-Moo",
+        "key": "CHOONG_MOO",
+        "domain": "Reliability Engineering",
+        "rune": 21,
+        "why": "ADR-0002 puts Choong-Moo at ITF slot 09 in syllabus order. ADR-0015 assigns it Reliability Engineering. ADR-0026 translates ITF slot 09 to rune 21, and prior-art/a24-v1/tkd-24/pattern_id.js lists CHOONG_MOO at v1 slot 21, which is the cross-check."
+      },
+      {
+        "slot": 10,
+        "pattern": "Kwang-Gae",
+        "key": "KWANG_GAE",
+        "domain": "Cloud and Container Platform",
+        "rune": 16,
+        "why": "ADR-0002 puts Kwang-Gae at ITF slot 10 in syllabus order. ADR-0015 assigns it Cloud and Container Platform. ADR-0026 translates ITF slot 10 to rune 16, and prior-art/a24-v1/tkd-24/pattern_id.js lists KWANG_GAE at v1 slot 16, which is the cross-check."
+      },
+      {
+        "slot": 11,
+        "pattern": "Po-Eun",
+        "key": "PO_EUN",
+        "domain": "Interface and Contract Governance",
+        "rune": 7,
+        "why": "ADR-0002 puts Po-Eun at ITF slot 11 in syllabus order. ADR-0015 assigns it Interface and Contract Governance. ADR-0026 translates ITF slot 11 to rune 07, and prior-art/a24-v1/tkd-24/pattern_id.js lists PO_EUN at v1 slot 7, which is the cross-check."
+      },
+      {
+        "slot": 12,
+        "pattern": "Ge-Baek",
+        "key": "GE_BAEK",
+        "domain": "Test Engineering",
+        "rune": 11,
+        "why": "ADR-0002 puts Ge-Baek at ITF slot 12 in syllabus order. ADR-0015 assigns it Test Engineering. ADR-0026 translates ITF slot 12 to rune 11, and prior-art/a24-v1/tkd-24/pattern_id.js lists GE_BAEK at v1 slot 11, which is the cross-check."
+      },
+      {
+        "slot": 13,
+        "pattern": "Eui-Am",
+        "key": "EUI_AM",
+        "domain": "Cost Engineering and FinOps",
+        "rune": 1,
+        "why": "ADR-0002 puts Eui-Am at ITF slot 13 in syllabus order. ADR-0015 assigns it Cost Engineering and FinOps. ADR-0026 translates ITF slot 13 to rune 01, and prior-art/a24-v1/tkd-24/pattern_id.js lists EUI_AM at v1 slot 1, which is the cross-check."
+      },
+      {
+        "slot": 14,
+        "pattern": "Choong-Jang",
+        "key": "CHOONG_JANG",
+        "domain": "Release Engineering and Change Control",
+        "rune": 10,
+        "why": "ADR-0002 puts Choong-Jang at ITF slot 14 in syllabus order. ADR-0015 assigns it Release Engineering and Change Control. ADR-0026 translates ITF slot 14 to rune 10, and prior-art/a24-v1/tkd-24/pattern_id.js lists CHOONG_JANG at v1 slot 10, which is the cross-check."
+      },
+      {
+        "slot": 15,
+        "pattern": "Juche",
+        "key": "JUCHE",
+        "domain": "Human Factors and Operator Experience",
+        "rune": 14,
+        "why": "ADR-0002 puts Juche at ITF slot 15 in syllabus order. ADR-0015 assigns it Human Factors and Operator Experience. ADR-0026 translates ITF slot 15 to rune 14, and prior-art/a24-v1/tkd-24/pattern_id.js lists JUCHE at v1 slot 14, which is the cross-check."
+      },
+      {
+        "slot": 16,
+        "pattern": "Sam-Il",
+        "key": "SAM_IL",
+        "domain": "Regulatory and Compliance",
+        "rune": 23,
+        "why": "ADR-0002 puts Sam-Il at ITF slot 16 in syllabus order. ADR-0015 assigns it Regulatory and Compliance. ADR-0026 translates ITF slot 16 to rune 23, and prior-art/a24-v1/tkd-24/pattern_id.js lists SAM_IL at v1 slot 23, which is the cross-check."
+      },
+      {
+        "slot": 17,
+        "pattern": "Yoo-Sin",
+        "key": "YOO_SIN",
+        "domain": "Performance Engineering",
+        "rune": 19,
+        "why": "ADR-0002 puts Yoo-Sin at ITF slot 17 in syllabus order. ADR-0015 assigns it Performance Engineering. ADR-0026 translates ITF slot 17 to rune 19, and prior-art/a24-v1/tkd-24/pattern_id.js lists YOO_SIN at v1 slot 19, which is the cross-check."
+      },
+      {
+        "slot": 18,
+        "pattern": "Choi-Yong",
+        "key": "CHOI_YONG",
+        "domain": "Incident Response and Forensics",
+        "rune": 17,
+        "why": "ADR-0002 puts Choi-Yong at ITF slot 18 in syllabus order. ADR-0015 assigns it Incident Response and Forensics. ADR-0026 translates ITF slot 18 to rune 17, and prior-art/a24-v1/tkd-24/pattern_id.js lists CHOI_YONG at v1 slot 17, which is the cross-check."
+      },
+      {
+        "slot": 19,
+        "pattern": "Yon-Gae",
+        "key": "YON_GAE",
+        "domain": "Network and Protocol Engineering",
+        "rune": 2,
+        "why": "ADR-0002 puts Yon-Gae at ITF slot 19 in syllabus order. ADR-0015 assigns it Network and Protocol Engineering. ADR-0026 translates ITF slot 19 to rune 02, and prior-art/a24-v1/tkd-24/pattern_id.js lists YON_GAE at v1 slot 2, which is the cross-check."
+      },
+      {
+        "slot": 20,
+        "pattern": "Ul-Ji",
+        "key": "UL_JI",
+        "domain": "Adversarial Testing",
+        "rune": 3,
+        "why": "ADR-0002 puts Ul-Ji at ITF slot 20 in syllabus order. ADR-0015 assigns it Adversarial Testing. ADR-0026 translates ITF slot 20 to rune 03, and prior-art/a24-v1/tkd-24/pattern_id.js lists UL_JI at v1 slot 3, which is the cross-check."
+      },
+      {
+        "slot": 21,
+        "pattern": "Moon-Moo",
+        "key": "MOON_MOO",
+        "domain": "Observability and Telemetry",
+        "rune": 15,
+        "why": "ADR-0002 puts Moon-Moo at ITF slot 21 in syllabus order. ADR-0015 assigns it Observability and Telemetry. ADR-0026 translates ITF slot 21 to rune 15, and prior-art/a24-v1/tkd-24/pattern_id.js lists MOON_MOO at v1 slot 15, which is the cross-check."
+      },
+      {
+        "slot": 22,
+        "pattern": "So-San",
+        "key": "SO_SAN",
+        "domain": "Business Continuity and Disaster Recovery",
+        "rune": 13,
+        "why": "ADR-0002 puts So-San at ITF slot 22 in syllabus order. ADR-0015 assigns it Business Continuity and Disaster Recovery. ADR-0026 translates ITF slot 22 to rune 13, and prior-art/a24-v1/tkd-24/pattern_id.js lists SO_SAN at v1 slot 13, which is the cross-check."
+      },
+      {
+        "slot": 23,
+        "pattern": "Se-Jong",
+        "key": "SE_JONG",
+        "domain": "Data Standards and Canonical Schema",
+        "rune": 4,
+        "why": "ADR-0002 puts Se-Jong at ITF slot 23 in syllabus order. ADR-0015 assigns it Data Standards and Canonical Schema. ADR-0026 translates ITF slot 23 to rune 04, and prior-art/a24-v1/tkd-24/pattern_id.js lists SE_JONG at v1 slot 4, which is the cross-check."
+      },
+      {
+        "slot": 24,
+        "pattern": "Tong-Il",
+        "key": "TONG_IL",
+        "domain": "Integration and Synthesis",
+        "rune": 20,
+        "why": "ADR-0002 puts Tong-Il at ITF slot 24 in syllabus order. ADR-0015 assigns it Integration and Synthesis. ADR-0026 translates ITF slot 24 to rune 20, and prior-art/a24-v1/tkd-24/pattern_id.js lists TONG_IL at v1 slot 20, which is the cross-check."
+      }
+    ],
+    "joinDay20260112": [
+      {
+        "rune": 1,
+        "capability": 23,
+        "actorSlot": 13,
+        "actorPattern": "Eui-Am",
+        "capabilitySlot": 16,
+        "capabilityPattern": "Sam-Il",
+        "why": "Table row 01,23. Rune 01 is ITF slot 13 Eui-Am. Capability 23 is a v1 capability slot, owned by the pattern in v1 slot 23, which is ITF slot 16 Sam-Il. On epoch day 20260112, Eui-Am holds Sam-Il's capability."
+      },
+      {
+        "rune": 2,
+        "capability": 11,
+        "actorSlot": 19,
+        "actorPattern": "Yon-Gae",
+        "capabilitySlot": 12,
+        "capabilityPattern": "Ge-Baek",
+        "why": "Table row 02,11. Rune 02 is ITF slot 19 Yon-Gae. Capability 11 is a v1 capability slot, owned by the pattern in v1 slot 11, which is ITF slot 12 Ge-Baek. On epoch day 20260112, Yon-Gae holds Ge-Baek's capability."
+      },
+      {
+        "rune": 3,
+        "capability": 9,
+        "actorSlot": 20,
+        "actorPattern": "Ul-Ji",
+        "capabilitySlot": 6,
+        "capabilityPattern": "Joong-Gun",
+        "why": "Table row 03,09. Rune 03 is ITF slot 20 Ul-Ji. Capability 09 is a v1 capability slot, owned by the pattern in v1 slot 9, which is ITF slot 06 Joong-Gun. On epoch day 20260112, Ul-Ji holds Joong-Gun's capability."
+      },
+      {
+        "rune": 4,
+        "capability": 18,
+        "actorSlot": 23,
+        "actorPattern": "Se-Jong",
+        "capabilitySlot": 4,
+        "capabilityPattern": "Won-Hyo",
+        "why": "Table row 04,18. Rune 04 is ITF slot 23 Se-Jong. Capability 18 is a v1 capability slot, owned by the pattern in v1 slot 18, which is ITF slot 04 Won-Hyo. On epoch day 20260112, Se-Jong holds Won-Hyo's capability."
+      },
+      {
+        "rune": 5,
+        "capability": 13,
+        "actorSlot": 3,
+        "actorPattern": "Do-San",
+        "capabilitySlot": 22,
+        "capabilityPattern": "So-San",
+        "why": "Table row 05,13. Rune 05 is ITF slot 03 Do-San. Capability 13 is a v1 capability slot, owned by the pattern in v1 slot 13, which is ITF slot 22 So-San. On epoch day 20260112, Do-San holds So-San's capability."
+      },
+      {
+        "rune": 6,
+        "capability": 10,
+        "actorSlot": 5,
+        "actorPattern": "Yul-Gok",
+        "capabilitySlot": 14,
+        "capabilityPattern": "Choong-Jang",
+        "why": "Table row 06,10. Rune 06 is ITF slot 05 Yul-Gok. Capability 10 is a v1 capability slot, owned by the pattern in v1 slot 10, which is ITF slot 14 Choong-Jang. On epoch day 20260112, Yul-Gok holds Choong-Jang's capability."
+      },
+      {
+        "rune": 7,
+        "capability": 8,
+        "actorSlot": 11,
+        "actorPattern": "Po-Eun",
+        "capabilitySlot": 8,
+        "capabilityPattern": "Hwa-Rang",
+        "why": "Table row 07,08. Rune 07 is ITF slot 11 Po-Eun. Capability 08 is a v1 capability slot, owned by the pattern in v1 slot 8, which is ITF slot 08 Hwa-Rang. On epoch day 20260112, Po-Eun holds Hwa-Rang's capability."
+      },
+      {
+        "rune": 8,
+        "capability": 22,
+        "actorSlot": 8,
+        "actorPattern": "Hwa-Rang",
+        "capabilitySlot": 1,
+        "capabilityPattern": "Chon-Ji",
+        "why": "Table row 08,22. Rune 08 is ITF slot 08 Hwa-Rang. Capability 22 is a v1 capability slot, owned by the pattern in v1 slot 22, which is ITF slot 01 Chon-Ji. On epoch day 20260112, Hwa-Rang holds Chon-Ji's capability."
+      },
+      {
+        "rune": 9,
+        "capability": 16,
+        "actorSlot": 6,
+        "actorPattern": "Joong-Gun",
+        "capabilitySlot": 10,
+        "capabilityPattern": "Kwang-Gae",
+        "why": "Table row 09,16. Rune 09 is ITF slot 06 Joong-Gun. Capability 16 is a v1 capability slot, owned by the pattern in v1 slot 16, which is ITF slot 10 Kwang-Gae. On epoch day 20260112, Joong-Gun holds Kwang-Gae's capability."
+      },
+      {
+        "rune": 10,
+        "capability": 6,
+        "actorSlot": 14,
+        "actorPattern": "Choong-Jang",
+        "capabilitySlot": 5,
+        "capabilityPattern": "Yul-Gok",
+        "why": "Table row 10,06. Rune 10 is ITF slot 14 Choong-Jang. Capability 06 is a v1 capability slot, owned by the pattern in v1 slot 6, which is ITF slot 05 Yul-Gok. On epoch day 20260112, Choong-Jang holds Yul-Gok's capability."
+      },
+      {
+        "rune": 11,
+        "capability": 17,
+        "actorSlot": 12,
+        "actorPattern": "Ge-Baek",
+        "capabilitySlot": 18,
+        "capabilityPattern": "Choi-Yong",
+        "why": "Table row 11,17. Rune 11 is ITF slot 12 Ge-Baek. Capability 17 is a v1 capability slot, owned by the pattern in v1 slot 17, which is ITF slot 18 Choi-Yong. On epoch day 20260112, Ge-Baek holds Choi-Yong's capability."
+      },
+      {
+        "rune": 12,
+        "capability": 4,
+        "actorSlot": 7,
+        "actorPattern": "Toi-Gye",
+        "capabilitySlot": 23,
+        "capabilityPattern": "Se-Jong",
+        "why": "Table row 12,04. Rune 12 is ITF slot 07 Toi-Gye. Capability 04 is a v1 capability slot, owned by the pattern in v1 slot 4, which is ITF slot 23 Se-Jong. On epoch day 20260112, Toi-Gye holds Se-Jong's capability."
+      },
+      {
+        "rune": 13,
+        "capability": 7,
+        "actorSlot": 22,
+        "actorPattern": "So-San",
+        "capabilitySlot": 11,
+        "capabilityPattern": "Po-Eun",
+        "why": "Table row 13,07. Rune 13 is ITF slot 22 So-San. Capability 07 is a v1 capability slot, owned by the pattern in v1 slot 7, which is ITF slot 11 Po-Eun. On epoch day 20260112, So-San holds Po-Eun's capability."
+      },
+      {
+        "rune": 14,
+        "capability": 20,
+        "actorSlot": 15,
+        "actorPattern": "Juche",
+        "capabilitySlot": 24,
+        "capabilityPattern": "Tong-Il",
+        "why": "Table row 14,20. Rune 14 is ITF slot 15 Juche. Capability 20 is a v1 capability slot, owned by the pattern in v1 slot 20, which is ITF slot 24 Tong-Il. On epoch day 20260112, Juche holds Tong-Il's capability."
+      },
+      {
+        "rune": 15,
+        "capability": 1,
+        "actorSlot": 21,
+        "actorPattern": "Moon-Moo",
+        "capabilitySlot": 13,
+        "capabilityPattern": "Eui-Am",
+        "why": "Table row 15,01. Rune 15 is ITF slot 21 Moon-Moo. Capability 01 is a v1 capability slot, owned by the pattern in v1 slot 1, which is ITF slot 13 Eui-Am. On epoch day 20260112, Moon-Moo holds Eui-Am's capability."
+      },
+      {
+        "rune": 16,
+        "capability": 12,
+        "actorSlot": 10,
+        "actorPattern": "Kwang-Gae",
+        "capabilitySlot": 7,
+        "capabilityPattern": "Toi-Gye",
+        "why": "Table row 16,12. Rune 16 is ITF slot 10 Kwang-Gae. Capability 12 is a v1 capability slot, owned by the pattern in v1 slot 12, which is ITF slot 07 Toi-Gye. On epoch day 20260112, Kwang-Gae holds Toi-Gye's capability."
+      },
+      {
+        "rune": 17,
+        "capability": 5,
+        "actorSlot": 18,
+        "actorPattern": "Choi-Yong",
+        "capabilitySlot": 3,
+        "capabilityPattern": "Do-San",
+        "why": "Table row 17,05. Rune 17 is ITF slot 18 Choi-Yong. Capability 05 is a v1 capability slot, owned by the pattern in v1 slot 5, which is ITF slot 03 Do-San. On epoch day 20260112, Choi-Yong holds Do-San's capability."
+      },
+      {
+        "rune": 18,
+        "capability": 14,
+        "actorSlot": 4,
+        "actorPattern": "Won-Hyo",
+        "capabilitySlot": 15,
+        "capabilityPattern": "Juche",
+        "why": "Table row 18,14. Rune 18 is ITF slot 04 Won-Hyo. Capability 14 is a v1 capability slot, owned by the pattern in v1 slot 14, which is ITF slot 15 Juche. On epoch day 20260112, Won-Hyo holds Juche's capability."
+      },
+      {
+        "rune": 19,
+        "capability": 2,
+        "actorSlot": 17,
+        "actorPattern": "Yoo-Sin",
+        "capabilitySlot": 19,
+        "capabilityPattern": "Yon-Gae",
+        "why": "Table row 19,02. Rune 19 is ITF slot 17 Yoo-Sin. Capability 02 is a v1 capability slot, owned by the pattern in v1 slot 2, which is ITF slot 19 Yon-Gae. On epoch day 20260112, Yoo-Sin holds Yon-Gae's capability."
+      },
+      {
+        "rune": 20,
+        "capability": 3,
+        "actorSlot": 24,
+        "actorPattern": "Tong-Il",
+        "capabilitySlot": 20,
+        "capabilityPattern": "Ul-Ji",
+        "why": "Table row 20,03. Rune 20 is ITF slot 24 Tong-Il. Capability 03 is a v1 capability slot, owned by the pattern in v1 slot 3, which is ITF slot 20 Ul-Ji. On epoch day 20260112, Tong-Il holds Ul-Ji's capability."
+      },
+      {
+        "rune": 21,
+        "capability": 15,
+        "actorSlot": 9,
+        "actorPattern": "Choong-Moo",
+        "capabilitySlot": 21,
+        "capabilityPattern": "Moon-Moo",
+        "why": "Table row 21,15. Rune 21 is ITF slot 09 Choong-Moo. Capability 15 is a v1 capability slot, owned by the pattern in v1 slot 15, which is ITF slot 21 Moon-Moo. On epoch day 20260112, Choong-Moo holds Moon-Moo's capability."
+      },
+      {
+        "rune": 22,
+        "capability": 19,
+        "actorSlot": 1,
+        "actorPattern": "Chon-Ji",
+        "capabilitySlot": 17,
+        "capabilityPattern": "Yoo-Sin",
+        "why": "Table row 22,19. Rune 22 is ITF slot 01 Chon-Ji. Capability 19 is a v1 capability slot, owned by the pattern in v1 slot 19, which is ITF slot 17 Yoo-Sin. On epoch day 20260112, Chon-Ji holds Yoo-Sin's capability."
+      },
+      {
+        "rune": 23,
+        "capability": 21,
+        "actorSlot": 16,
+        "actorPattern": "Sam-Il",
+        "capabilitySlot": 9,
+        "capabilityPattern": "Choong-Moo",
+        "why": "Table row 23,21. Rune 23 is ITF slot 16 Sam-Il. Capability 21 is a v1 capability slot, owned by the pattern in v1 slot 21, which is ITF slot 09 Choong-Moo. On epoch day 20260112, Sam-Il holds Choong-Moo's capability."
+      },
+      {
+        "rune": 24,
+        "capability": 24,
+        "actorSlot": 2,
+        "actorPattern": "Dan-Gun",
+        "capabilitySlot": 2,
+        "capabilityPattern": "Dan-Gun",
+        "why": "Table row 24,24. Rune 24 is ITF slot 02 Dan-Gun. Capability 24 is a v1 capability slot, owned by the pattern in v1 slot 24, which is ITF slot 02 Dan-Gun. On epoch day 20260112, Dan-Gun holds Dan-Gun's capability."
+      }
+    ]
   }
 }
