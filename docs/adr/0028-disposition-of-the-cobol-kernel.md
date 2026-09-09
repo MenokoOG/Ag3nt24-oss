@@ -1,6 +1,6 @@
 # ADR-0028: Disposition of the COBOL kernel
 
-- Status: **Proposed. Open for ruling.**
+- Status: **Accepted. Ruled 2026-09-09.**
 - Date: 2026-09-09
 - Deciders: Lawrence Jefferson II
 - Reopens: ADR-0023 (which rejected "retire the kernel and write the ACL in Python" as an alternative)
@@ -98,6 +98,19 @@ Option D is defensible and would not be a mistake. It should be taken on the gro
 
 Option A is the weakest of the four. It accepts the recurring cost without gaining anything the others do not also provide.
 
-## Ruling
+## Ruling (2026-09-09)
 
-*Pending. Lawrence rules.*
+**Option C.** The gates are rebuilt in Python. Python is the runtime and the only implementation deployed: no compiler pin, no from-source GnuCOBOL, no two-language image, and the Linux packaging problem that stopped Phase 3 disappears.
+
+The COBOL stays in `kernel/` as the reference implementation. It keeps building on the development machine and it keeps its build manifest. It is not deployed and it is not on the runtime path.
+
+`npm run conform` becomes a differential harness. Every scenario and every generated rotation table runs through both implementations and the run fails if they disagree by a single byte. That check is the reason this option was chosen over retiring the COBOL: the portability experiment produced a TypeScript gate that a competent engineer would have shipped and a competent reviewer would have passed, and it returned a wrong authorization table with no error of any kind. Running both and comparing bytes is what caught it. Nothing else would have.
+
+Consequences that follow immediately:
+
+- ADR-0023 stands as to *what* the ACL is and where it sits. Its alternative "retire the kernel and write the ACL in Python" is superseded by this ruling only as to implementation language; the kernel is not retired.
+- ADR-0025's four-container set stands, and `kernel` no longer needs GnuCOBOL in its image.
+- ADR-0021 keeps its force for the COBOL reference. Its claim that the binary is reproducible from the manifest is still wrong as written and still needs narrowing to source hashes.
+- The HTTP shim written in Phase 3 is implementation-agnostic and is retargeted rather than discarded.
+- Phase 3 as scoped is substantially superseded. What survives is the shim and the compose file.
+- Port from the declarations, never the comments. If any part of the runtime is ever written in TypeScript, `BigInt` is mandatory on the rotation path.
