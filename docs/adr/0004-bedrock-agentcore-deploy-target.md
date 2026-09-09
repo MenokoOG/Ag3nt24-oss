@@ -1,6 +1,6 @@
 # ADR-0004: AWS Bedrock AgentCore is the deploy target
 
-- Status: Accepted
+- Status: Superseded by ADR-0025 (2026-09-09). Text unchanged.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0005, ADR-0006, ADR-0009

@@ -1,6 +1,6 @@
 # ADR-0006: Four storage concerns, four stores, never collapsed
 
-- Status: Accepted
+- Status: Accepted. Amended by ADR-0025 (2026-09-09): four concerns stand, the stores are the Docker set.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0007, ADR-0008

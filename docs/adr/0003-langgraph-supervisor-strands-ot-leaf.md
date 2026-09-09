@@ -1,6 +1,6 @@
 # ADR-0003: LangGraph StateGraph as root supervisor, Strands Agents SDK for the Chon-Ji leaf
 
-- Status: Accepted
+- Status: Superseded by ADR-0025 (2026-09-09). Text unchanged.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0002, ADR-0016 (node interface contract)

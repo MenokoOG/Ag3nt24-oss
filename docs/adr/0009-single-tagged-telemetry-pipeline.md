@@ -1,6 +1,6 @@
 # ADR-0009: One telemetry pipeline tagged by agent-id, read-only dashboard
 
-- Status: Accepted
+- Status: Superseded by ADR-0025 and ADR-0027 (2026-09-09). One tagged pipeline stands; it lands in HADES. Text unchanged.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0004, ADR-0018 (tagging scheme specifics)

@@ -1,6 +1,6 @@
 # ADR-0010: Python 3.13 throughout, control plane split from the agent runtime
 
-- Status: Accepted
+- Status: Accepted. Amended by ADR-0025 (2026-09-09): hades is the control plane, core is the runtime.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0004, ADR-0009, ADR-0017 (route list)

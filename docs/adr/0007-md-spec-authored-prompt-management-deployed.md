@@ -1,6 +1,6 @@
 # ADR-0007: MD-spec charters are authored; Bedrock Prompt Management is the deployed artifact
 
-- Status: Accepted
+- Status: Superseded by ADR-0025 and ADR-0027 (2026-09-09). The prompt store is in HADES. Text unchanged.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0006, ADR-0011

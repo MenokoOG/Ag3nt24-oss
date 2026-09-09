@@ -1,7 +1,7 @@
 # 0021 — Rebuild the COBOL gates on Windows from unmodified source
 
 Date: 2026-08-16
-Status: Accepted
+Status: Accepted. Amended by ADR-0025 (2026-09-09): the kernel container is the second build platform; conformance must pass on both.
 
 ## Context
 
