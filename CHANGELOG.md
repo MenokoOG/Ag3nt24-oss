@@ -8,6 +8,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 - ADR-0023 through ADR-0027 (Phase 0 rulings, 2026-09-09): the COBOL kernel is the boundary ACL; scouts are a deterministic layer under the 24; Docker and a model-agnostic stack supersede ADR-0003, 0004, 0005, 0007 and 0009 and amend 0006, 0010 and 0021; ITF slot order with a pinned rune translation; HADES is the control room at the boundary (amends ADR-0020).
 - `docs/plan/2026-09-09-ag3nt24-hades-plan.md`: the build plan, phases 0 to 7, four containers, model selection.
+- Phase 2, registry and translation: `conformance/registry.json` pins the 24 ITF slots with pattern name, key, domain role from ADR-0015 and the rune number from ADR-0026, cross-checked row by row against `prior-art/a24-v1/tkd-24/pattern_id.js`. `bridge/slot_translation.js` is the table's only reader and validates at load rather than at call, refusing anything that is not a bijection between ITF slots 1-24 and rune numbers 1-24. `conformance/expected.json` gains a `registry` key holding both pins, derived by hand from the ADRs. `conformance/run.js` adds the 24-slot registry check and the day-20260112 kernel join, which resolves both columns of the regenerated rotation table into ITF patterns; the run now reports `checks: 81/81`, `registry: 24/24 match` and `join: 24/24 match` alongside the unchanged `5/5 match`. Node stdlib only. No kernel change, no archive change, no agent behavior.
 
 ### Changed
 

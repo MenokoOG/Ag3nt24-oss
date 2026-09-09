@@ -12,9 +12,9 @@ The kernel is the boundary ACL (ADR-0023). Scouts are a deterministic layer unde
 
 The four COBOL gates rebuild from unmodified v1.0.0 source with GnuCOBOL 3.2.0. The five carried scenarios reproduce their pinned verdicts: `5/5 match`. See [ADR-0021](docs/adr/0021-rebuild-cobol-gates-on-windows.md) and `conformance/`.
 
-## Phase 2: registry and translation. Next. Designed.
+## Phase 2: registry and translation. Done 2026-09-09.
 
-`conformance/registry.json`: 24 ITF slots, pattern, domain role, rune number. Conformance extended with the bijection check and the resolved day-20260112 rotation table. Node stdlib only. No agent behavior.
+`conformance/registry.json` carries the 24 ITF slots with pattern name, key, domain role and rune number. `bridge/slot_translation.js` reads it and refuses to load a table that is not a bijection between ITF slots 1-24 and rune numbers 1-24. Conformance is extended with the 24-slot registry check and the day-20260112 rotation table resolved through the translation into ITF patterns, both pinned by hand in `conformance/expected.json`. The run reports `checks: 81/81`, `registry: 24/24 match`, `join: 24/24 match`, and still `5/5 match`. Node stdlib only. No agent behavior. See [ADR-0026](docs/adr/0026-itf-slot-order-with-rune-translation.md).
 
 ## Phase 3: kernel container. Designed.
 
