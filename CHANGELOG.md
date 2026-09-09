@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Added
+
+- ADR-0023 through ADR-0027 (Phase 0 rulings, 2026-09-09): the COBOL kernel is the boundary ACL; scouts are a deterministic layer under the 24; Docker and a model-agnostic stack supersede ADR-0003, 0004, 0005, 0007 and 0009 and amend 0006, 0010 and 0021; ITF slot order with a pinned rune translation; HADES is the control room at the boundary (amends ADR-0020).
+- `docs/plan/2026-09-09-ag3nt24-hades-plan.md`: the build plan, phases 0 to 7, four containers, model selection.
+
+### Changed
+
+- ADR-0015 ruled: the 24-role roster is frozen (Option A for the index, Option C for charters). Slot 10 reads Cloud and Container Platform.
+- ROADMAP rewritten to phases 0 to 7. Phase 2 is now registry and translation, replacing the two earlier Phase 2 definitions.
+- README status, design summary and repo layout updated for the rulings.
+- Superseded and amended ADRs carry a status line pointing at ADR-0025 or ADR-0027. Their text is unchanged, per ADR-0001.
+- Architecture overview carries a 2026-09-09 header pointing at the plan; its stack sections are superseded by ADR-0025.
+
 ## [0.1.0] - 2026-09-08
 
 First public release of the repository: kernel port, doctrine, and contracts. Nothing is claimed as production capability.
