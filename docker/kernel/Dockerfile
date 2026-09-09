@@ -74,7 +74,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
       libdb5.3 \
       libgmp10 \
-      libncurses6 \
+      libncursesw6 \
+      libtinfo6 \
       libxml2 \
       libcjson1 \
     && rm -rf /var/lib/apt/lists/*
@@ -85,6 +86,17 @@ ENV PATH="/opt/gnucobol/bin:${PATH}" \
     LD_LIBRARY_PATH="/opt/gnucobol/lib" \
     COB_CONFIG_DIR="/opt/gnucobol/share/gnucobol/config" \
     COB_COPY_DIR="/opt/gnucobol/share/gnucobol/copy"
+
+# Prove the compiler can actually start before anything depends on it. A gate
+# that cannot be built and a compiler that cannot load its libraries produce
+# very different errors, and only one of them is about the kernel. Every missing
+# library is listed at once rather than discovered one build at a time.
+RUN MISSING="$(ldd /opt/gnucobol/bin/cobc | grep 'not found' || true)$(ldd /opt/gnucobol/lib/libcob.so | grep 'not found' || true)" \
+    && if [ -n "${MISSING}" ]; then \
+         echo "GnuCOBOL cannot load these shared libraries:"; echo "${MISSING}"; \
+         echo "Add the packages providing them to the runtime stage."; exit 1; \
+       fi \
+    && cobc --version
 
 WORKDIR /app
 
