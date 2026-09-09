@@ -65,25 +65,81 @@ function resolveCobc() {
   );
 }
 
+// Ask cobc where it thinks its own directories are. On Linux this is the
+// authoritative answer and costs one process. On Windows outside an MSYS2 shell
+// it reports an MSYS-style path ('/ucrt64/share/gnucobol/config') that Windows
+// cannot open, which is exactly the toolchain fact ADR-0021 records — so this is
+// one candidate among several, never the only one, and every candidate is
+// checked for default.conf before it is used.
+function cobcInfoDirs(cobc) {
+  const proc = spawnSync(cobc.binary, ['--info'], { encoding: 'utf8' });
+  if (proc.error || proc.status !== 0) return {};
+
+  const dirs = {};
+  for (const line of String(proc.stdout || '').split(/\r?\n/)) {
+    // 'COB_CONFIG_DIR           : /usr/share/gnucobol/config'
+    const m = /^\s*(COB_CONFIG_DIR|COB_COPY_DIR)\s*:\s*(.+?)\s*$/.exec(line);
+    if (m && !dirs[m[1]]) dirs[m[1]] = m[2];
+  }
+  return dirs;
+}
+
 function cobcEnv(cobc) {
-  const prefix = path.dirname(cobc.dir); // <prefix>/bin/cobc.exe -> <prefix>
+  const prefix = path.dirname(cobc.dir); // <prefix>/bin/cobc[.exe] -> <prefix>
   const env = { ...process.env };
+  const info = cobcInfoDirs(cobc);
 
-  // Only fill these in if the caller has not already chosen. An explicitly set
-  // COB_CONFIG_DIR wins — this is a fallback, not an override.
-  if (!env.COB_CONFIG_DIR) {
-    env.COB_CONFIG_DIR = path.join(prefix, 'share', 'gnucobol', 'config');
-  }
-  if (!env.COB_COPY_DIR) {
-    env.COB_COPY_DIR = path.join(prefix, 'share', 'gnucobol', 'copy');
-  }
+  // Candidates in order of trust. An explicitly set environment variable always
+  // wins: this is a fallback, not an override.
+  //
+  // The layout is not the same everywhere. A source build with --prefix puts
+  // config under <prefix>/share/gnucobol/config, which is what Windows and the
+  // kernel image both use. Debian's packages version the directory instead
+  // ('gnucobol3', 'gnucobol4'), which is why the Ubuntu CI job could never find
+  // it and this build has never once succeeded on Linux.
+  const suffixes = ['gnucobol', 'gnucobol4', 'gnucobol3'];
 
-  if (!fs.existsSync(path.join(env.COB_CONFIG_DIR, 'default.conf'))) {
-    throw new Error(
-      `COB_CONFIG_DIR does not contain default.conf: ${env.COB_CONFIG_DIR}\n` +
-      'cobc cannot compile without its configuration. Set COB_CONFIG_DIR to the ' +
-      'Windows path of the GnuCOBOL config directory and retry.'
-    );
+  const candidates = {
+    COB_CONFIG_DIR: [
+      env.COB_CONFIG_DIR,
+      ...suffixes.map(s => path.join(prefix, 'share', s, 'config')),
+      info.COB_CONFIG_DIR
+    ],
+    COB_COPY_DIR: [
+      env.COB_COPY_DIR,
+      ...suffixes.map(s => path.join(prefix, 'share', s, 'copy')),
+      info.COB_COPY_DIR
+    ]
+  };
+
+  // default.conf is the file cobc cannot compile without, so its presence is
+  // what makes a candidate real rather than merely plausible.
+  const marker = { COB_CONFIG_DIR: 'default.conf', COB_COPY_DIR: null };
+
+  for (const key of Object.keys(candidates)) {
+    const tried = [];
+    let chosen = null;
+
+    for (const dir of candidates[key]) {
+      if (!dir) continue;
+      tried.push(dir);
+      const probe = marker[key] ? path.join(dir, marker[key]) : dir;
+      if (fs.existsSync(probe)) {
+        chosen = dir;
+        break;
+      }
+    }
+
+    if (!chosen) {
+      throw new Error(
+        `${key} could not be resolved. Tried:\n` +
+        tried.map(d => `  ${d}`).join('\n') + '\n' +
+        'cobc cannot compile without its configuration. Install GnuCOBOL or set ' +
+        `${key} explicitly to the directory holding ${marker[key] || 'the copybooks'}.`
+      );
+    }
+
+    env[key] = chosen;
   }
 
   return env;
