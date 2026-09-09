@@ -1,0 +1,48 @@
+{
+  "schema": "ag3nt24/registry/1",
+  "why": "The 24 ITF slots are the only numbering this framework uses (ADR-0002, ADR-0026). Receipts, telemetry tags, charters and HADES all carry the ITF slot. The 'rune' field exists for exactly one purpose: the COBOL kernel numbers the same 24 in the v1.0.0 order, and a call to rune_authorize or a read of a rotation table has to be translated into and out of that order. A rune number is never a name, never an identity and never appears in a receipt, a tag or a log line outside the kernel bridge. A reviewer who sees one there has found a bug.",
+  "derivedFrom": [
+    {
+      "source": "docs/adr/0002-24-role-team-one-per-itf-pattern.md",
+      "gives": "the 24 slots in ITF syllabus order and the spelling of each pattern name"
+    },
+    {
+      "source": "docs/adr/0015-domain-role-roster-for-patterns-2-24.md",
+      "gives": "the domain role text for every slot, frozen by the 2026-09-09 ruling"
+    },
+    {
+      "source": "docs/adr/0026-itf-slot-order-with-rune-translation.md",
+      "gives": "the pinned ITF-slot-to-rune-number translation table"
+    },
+    {
+      "source": "prior-art/a24-v1/tkd-24/pattern_id.js",
+      "gives": "read-only cross-check that each key sits at its stated rune number in the v1 order. Never imported, never edited."
+    }
+  ],
+  "entries": [
+    { "slot": 1,  "pattern": "Chon-Ji",     "key": "CHON_JI",     "domain": "Systems Architecture (incl. electrical / OT-SCADA)", "rune": 22 },
+    { "slot": 2,  "pattern": "Dan-Gun",     "key": "DAN_GUN",     "domain": "Legacy Code Archaeology",                            "rune": 24 },
+    { "slot": 3,  "pattern": "Do-San",      "key": "DO_SAN",      "domain": "Data Engineering and Migration",                     "rune": 5  },
+    { "slot": 4,  "pattern": "Won-Hyo",     "key": "WON_HYO",     "domain": "Requirements and Domain Modeling",                   "rune": 18 },
+    { "slot": 5,  "pattern": "Yul-Gok",     "key": "YUL_GOK",     "domain": "Formal Methods and Verification",                    "rune": 6  },
+    { "slot": 6,  "pattern": "Joong-Gun",   "key": "JOONG_GUN",   "domain": "Security Engineering",                               "rune": 9  },
+    { "slot": 7,  "pattern": "Toi-Gye",     "key": "TOI_GYE",     "domain": "Knowledge Management",                               "rune": 12 },
+    { "slot": 8,  "pattern": "Hwa-Rang",    "key": "HWA_RANG",    "domain": "Program and Delivery Coordination",                  "rune": 8  },
+    { "slot": 9,  "pattern": "Choong-Moo",  "key": "CHOONG_MOO",  "domain": "Reliability Engineering",                            "rune": 21 },
+    { "slot": 10, "pattern": "Kwang-Gae",   "key": "KWANG_GAE",   "domain": "Cloud and Container Platform",                       "rune": 16 },
+    { "slot": 11, "pattern": "Po-Eun",      "key": "PO_EUN",      "domain": "Interface and Contract Governance",                  "rune": 7  },
+    { "slot": 12, "pattern": "Ge-Baek",     "key": "GE_BAEK",     "domain": "Test Engineering",                                   "rune": 11 },
+    { "slot": 13, "pattern": "Eui-Am",      "key": "EUI_AM",      "domain": "Cost Engineering and FinOps",                        "rune": 1  },
+    { "slot": 14, "pattern": "Choong-Jang", "key": "CHOONG_JANG", "domain": "Release Engineering and Change Control",             "rune": 10 },
+    { "slot": 15, "pattern": "Juche",       "key": "JUCHE",       "domain": "Human Factors and Operator Experience",              "rune": 14 },
+    { "slot": 16, "pattern": "Sam-Il",      "key": "SAM_IL",      "domain": "Regulatory and Compliance",                          "rune": 23 },
+    { "slot": 17, "pattern": "Yoo-Sin",     "key": "YOO_SIN",     "domain": "Performance Engineering",                            "rune": 19 },
+    { "slot": 18, "pattern": "Choi-Yong",   "key": "CHOI_YONG",   "domain": "Incident Response and Forensics",                    "rune": 17 },
+    { "slot": 19, "pattern": "Yon-Gae",     "key": "YON_GAE",     "domain": "Network and Protocol Engineering",                   "rune": 2  },
+    { "slot": 20, "pattern": "Ul-Ji",       "key": "UL_JI",       "domain": "Adversarial Testing",                                "rune": 3  },
+    { "slot": 21, "pattern": "Moon-Moo",    "key": "MOON_MOO",    "domain": "Observability and Telemetry",                        "rune": 15 },
+    { "slot": 22, "pattern": "So-San",      "key": "SO_SAN",      "domain": "Business Continuity and Disaster Recovery",          "rune": 13 },
+    { "slot": 23, "pattern": "Se-Jong",     "key": "SE_JONG",     "domain": "Data Standards and Canonical Schema",                "rune": 4  },
+    { "slot": 24, "pattern": "Tong-Il",     "key": "TONG_IL",     "domain": "Integration and Synthesis",                          "rune": 20 }
+  ]
+}
