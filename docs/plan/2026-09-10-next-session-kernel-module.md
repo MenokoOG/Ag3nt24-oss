@@ -15,14 +15,14 @@ You are working in `F:\classHuman\Ag3nt24-oss`. Windows, Node 24, Python 3.13 vi
 `main` contains two things that disagree with each other:
 
 - **Phase 2** — the 24-slot registry, the ITF-to-rune translation in `bridge/slot_translation.js`, the pins in `conformance/expected.json`, and the extended runner. Green: `checks: 81/81`, `5/5 match`, `registry: 24/24 match`, `join: 24/24 match`.
-- **Phase 3** — a Node HTTP shim (`bridge/shim.js`), a Dockerfile that compiles GnuCOBOL 3.2.0 from source, `docker-compose.yml`, and a `kernel-image` CI job. This was merged from a **draft** pull request and **that CI job has never passed**. Assume CI on `main` is red until you check.
+- **Phase 3 remnants** — a Node HTTP shim, `bridge/shim.js`. Phase 3 was merged from a draft pull request whose CI never passed. Its Dockerfile, `docker-compose.yml`, `.dockerignore` and `kernel-image` CI job were removed after ADR-0028 and ADR-0029 landed, since both delete the COBOL container outright. The shim is left in place because module 1 replaces it; do not build on it.
 
-Two rulings are made and not yet in `main`:
+Both rulings below are **merged and in `main`** as of the end of that session:
 
-- **ADR-0028, ruled, on branch `claude/adr-0028-kernel-disposition`, 2 commits ahead, not merged.** The four gates are rebuilt in Python. The COBOL stays in `kernel/` as the reference implementation, still building on this machine, never deployed. `npm run conform` becomes a differential harness that runs both implementations and fails if they disagree by one byte.
-- **ADR-0029, drafted and uncommitted on branch `claude/redesign-python-backend`.** Python backend end to end, React with Vite and TypeScript for the frontend, Node off the runtime path, three containers (`api`, `web`, `db`) instead of four. Read it, do not assume it; Lawrence has seen it but it is not committed.
+- **ADR-0028, ruled and merged (PR #7).** The four gates are rebuilt in Python. The COBOL stays in `kernel/` as the reference implementation, still building on this machine, never deployed. `npm run conform` becomes a differential harness that runs both implementations and fails if they disagree by one byte.
+- **ADR-0029, merged (PR #6).** Python backend end to end, React with Vite and TypeScript for the frontend, Node off the runtime path, three containers (`api`, `web`, `db`) instead of four. None of those three exist yet.
 
-Because ADR-0028 and ADR-0029 supersede most of Phase 3, the Dockerfile and the Node shim in `main` are dead code awaiting removal. Do not build on them.
+CI on `main` runs one job, `contracts (ruff, mypy, pytest)`, and it is green. Nothing in CI runs the conformance suite: the bare-metal Linux job cannot (GnuCOBOL 3.1.2 will not compile `rune_rotation.cbl`) and the image job went with the image. Closing that gap is part of module 1.
 
 ## How Lawrence wants this built
 
