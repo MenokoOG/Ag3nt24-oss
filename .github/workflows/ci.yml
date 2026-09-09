@@ -1,10 +1,20 @@
 name: CI
 
-# Two jobs. The python job is the four gates carried from the doctrine
-# repository, same order, same commands. The kernel-image job builds the
-# kernel container, which compiles GnuCOBOL 3.2.0 from source, rebuilds the
-# four COBOL gates and runs the conformance suite as the image test; a changed
-# verdict fails the build.
+# One job for now. The python job is the four gates carried from the doctrine
+# repository, same order, same commands.
+#
+# There is no kernel job. ADR-0028 rebuilds the gates in Python and keeps the
+# COBOL as a reference implementation that never ships; ADR-0029 takes Node off
+# the runtime and drops the container that existed only to hold a COBOL
+# toolchain. Both landed 2026-09-09.
+#
+# This leaves a real gap and it is worth naming rather than discovering later:
+# nothing in CI currently runs the conformance suite. The bare-metal Linux job
+# was removed because Ubuntu ships GnuCOBOL 3.1.2, which cannot compile
+# kernel/rune_rotation.cbl at all, and the image job is removed here with the
+# image. Conformance still runs on a development machine that has GnuCOBOL
+# 3.2.0. The gap closes when the Python gates land: their tests run here, and
+# the differential check against the COBOL stays where the compiler is.
 
 on:
   push:
@@ -50,73 +60,3 @@ jobs:
 
       - name: Tests
         run: uv run pytest
-
-  # There is no bare-metal Linux kernel job any more, and the reason is worth
-  # recording. Ubuntu ships GnuCOBOL 3.1.2, which treats POS as a reserved word
-  # and rejects kernel/rune_rotation.cbl outright: that file declares
-  # '01 POS PIC 99' and drives its hex loop with it. GnuCOBOL 3.2.0, the version
-  # ADR-0021 pins, accepts it. The job could only ever pass by editing the COBOL
-  # or by adding a compile flag, and both are decisions about the kernel's
-  # meaning rather than chores.
-  #
-  # ADR-0025 names the kernel container the second build platform, not bare
-  # Ubuntu. The kernel-image job below is that platform: it compiles GnuCOBOL
-  # 3.2.0 from source, builds the four gates, and runs conformance inside the
-  # image. That is the Linux evidence, and it uses the pinned compiler.
-
-  kernel-image:
-    name: kernel image (build + conformance + one request)
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build the kernel image
-        # The Dockerfile compiles GnuCOBOL 3.2.0 from source, builds the four
-        # gates from kernel/*.cbl, and runs the conformance suite as the image
-        # test. A changed verdict fails this step, so an image that cannot
-        # reproduce the pinned verdicts is never produced.
-        run: docker compose build kernel
-
-      - name: Show what the image reports about itself
-        run: |
-          docker compose run --rm --no-deps --entrypoint sh kernel -c \
-            'cat kernel/bin/BUILD-MANIFEST.json'
-
-      - name: Start the kernel
-        run: docker compose up -d kernel
-
-      - name: Wait for health
-        run: |
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8024/health >/dev/null 2>&1; then
-              echo "kernel is up"; exit 0
-            fi
-            sleep 2
-          done
-          echo "kernel did not become healthy"
-          docker compose logs kernel
-          exit 1
-
-      - name: One request returns DECISION=A
-        # The Phase 3 acceptance criterion from the build plan.
-        run: |
-          curl -fsS http://127.0.0.1:8024/health
-          RESPONSE=$(curl -fsS -X POST http://127.0.0.1:8024/tenet \
-            -H 'content-type: application/json' \
-            -d '{"actorId":"chon-ji","actionId":"read-estate","sourceDomain":"scout","targetDomain":"estate","hasContract":true,"hasProvenance":true,"provenanceMatch":true,"retryCount":0,"maxRetries":3,"withinQuota":true,"anomalyDetected":false}')
-          echo "$RESPONSE"
-          echo "$RESPONSE" | grep -q '"decision": "A"' || { echo 'expected DECISION=A'; exit 1; }
-
-      - name: A rune number never crosses the boundary
-        # ADR-0026. The registry the shim serves carries ITF slots only.
-        run: |
-          REGISTRY=$(curl -fsS http://127.0.0.1:8024/registry)
-          echo "$REGISTRY" | head -20
-          echo "$REGISTRY" | grep -q '"rune"' && { echo 'a rune number crossed the boundary'; exit 1; }
-          echo "$REGISTRY" | grep -q '"pattern": "Chon-Ji"' || { echo 'registry did not resolve'; exit 1; }
-          echo "ok: ITF slots only"
-
-      - name: Stop
-        if: always()
-        run: docker compose down -v
