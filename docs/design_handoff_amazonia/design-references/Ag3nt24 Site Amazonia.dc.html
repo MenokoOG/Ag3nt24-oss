@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta property="og:title" content="Ag3nt24 — Agents propose. A human signs.">
+<meta property="og:image" content="assets/og-card.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  html, body { margin:0; padding:0; background:#0A0F0A; }
+  * { box-sizing:border-box; }
+  body { color:#e6f2e6; font-family:Rajdhani, system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection { background:#39FF14; color:#0A0F0A; }
+  a { color:#00CED1; text-decoration:none; transition:color .2s ease-out; }
+  a:hover { color:#39FF14; }
+  :focus-visible { outline:2px solid #00CED1; outline-offset:2px; }
+  @keyframes azRise { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+  @keyframes azFly { 0%,100% { transform:translate3d(0,0,0); opacity:.25 } 45% { opacity:1 } 50% { transform:translate3d(12px,-28px,0) } }
+  @keyframes azBreathe { 0%,100% { opacity:.4 } 50% { opacity:.95 } }
+</style>
+</helmet>
+
+<div style="min-height:100dvh; background:linear-gradient(180deg, rgba(10,15,10,.95) 0%, rgba(11,26,13,.93) 55%, rgba(10,61,10,.93) 100%), url(assets/canopy-tile.png) repeat; background-size:auto, 620px; font-size:16px; line-height:1.6;">
+
+  <header style="position:sticky; top:0; z-index:100; background:rgba(10,15,10,.86); backdrop-filter:blur(12px); border-bottom:1px solid #143a16;">
+    <div style="max-width:1280px; margin:0 auto; padding:14px 1.5rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:11px; margin-right:auto;">
+        <span style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,#39FF14,#00CED1); display:grid; place-items:center; box-shadow:0 0 16px rgba(57,255,20,.4);">
+          <span style="width:9px; height:9px; border-radius:8px; background:#0A0F0A;"></span>
+        </span>
+        <img src="assets/ag3nt24-wordmark.png" alt="Ag3nt24" style="height:22px; width:auto; display:block;">
+        <span style="font-family:'JetBrains Mono', monospace; font-size:.7rem; color:#00CED1; border:1px solid rgba(0,206,209,.35); border-radius:8px; padding:2px 9px; white-space:nowrap;">Apache-2.0</span>
+      </div>
+      <nav style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <button onClick="{{ goHome }}" style="font-family:Orbitron, sans-serif; font-size:.8rem; font-weight:500; letter-spacing:.04em; border:1px solid transparent; background:transparent; color:#a9c2ab; padding:9px 14px; border-radius:8px; cursor:pointer; transition:color .2s ease-out, background .2s ease-out;" style-hover="background:rgba(57,255,20,.10); color:#39FF14;">Overview</button>
+        <button onClick="{{ goAgent }}" style="font-family:Orbitron, sans-serif; font-size:.8rem; font-weight:500; letter-spacing:.04em; border:1px solid transparent; background:transparent; color:#a9c2ab; padding:9px 14px; border-radius:8px; cursor:pointer; transition:color .2s ease-out, background .2s ease-out;" style-hover="background:rgba(57,255,20,.10); color:#39FF14;">Ag3nt24</button>
+        <button onClick="{{ goHades }}" style="font-family:Orbitron, sans-serif; font-size:.8rem; font-weight:500; letter-spacing:.04em; border:1px solid transparent; background:transparent; color:#a9c2ab; padding:9px 14px; border-radius:8px; cursor:pointer; transition:color .2s ease-out, background .2s ease-out;" style-hover="background:rgba(57,255,20,.10); color:#39FF14;">HADES</button>
+        <a href="HADES Dashboard Amazonia.dc.html" style="font-family:Orbitron, sans-serif; font-size:.8rem; font-weight:600; letter-spacing:.04em; background:#FFD700; border:1px solid #FFD700; color:#0A0F0A; padding:10px 18px; border-radius:8px; white-space:nowrap; transition:background .2s ease-out;" style-hover="background:#E6C200; color:#0A0F0A;">Open HADES</a>
+        <a href="https://github.com/MenokoOG/Ag3nt24-oss" style="font-family:Orbitron, sans-serif; font-size:.8rem; font-weight:600; letter-spacing:.04em; background:#0A3D0A; border:1px solid #39FF14; color:#39FF14; padding:10px 18px; border-radius:8px; transition:background .2s ease-out;" style-hover="background:#0f5410; color:#39FF14;">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <main>
+    <section style="position:relative; overflow:hidden; padding:clamp(3rem,7vw,6rem) 1.5rem clamp(3rem,6vw,5rem);">
+      <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+        <div style="position:absolute; top:-220px; right:-160px; width:680px; height:680px; border-radius:50%; background:radial-gradient(circle at 40% 40%, rgba(155,48,255,.20), rgba(0,206,209,.12) 45%, rgba(10,15,10,0) 72%);"></div>
+        <span style="position:absolute; top:22%; left:9%; width:5px; height:5px; border-radius:50%; background:#FFD700; box-shadow:0 0 10px #FFD700; animation:azFly 10s ease-in-out infinite;"></span>
+        <span style="position:absolute; top:58%; left:38%; width:4px; height:4px; border-radius:50%; background:#39FF14; box-shadow:0 0 10px #39FF14; animation:azFly 13s ease-in-out 1.5s infinite;"></span>
+        <span style="position:absolute; top:34%; left:72%; width:5px; height:5px; border-radius:50%; background:#FF69B4; box-shadow:0 0 12px rgba(255,105,180,.85); animation:azFly 11s ease-in-out .8s infinite;"></span>
+      </div>
+      <div style="position:relative; max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,4vw,4rem); align-items:center;">
+        <div style="min-width:0; animation:azRise 420ms ease-out both;">
+          <div style="display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#39FF14; background:rgba(10,61,10,.6); border:1px solid #1c5220; border-radius:8px; padding:6px 12px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#39FF14; box-shadow:0 0 8px #39FF14; animation:azBreathe 2.6s ease-in-out infinite;"></span>
+            Legacy AI systems modernization
+          </div>
+          <h1 style="font-family:Orbitron, sans-serif; font-size:clamp(2.5rem,5vw,4rem); line-height:1.08; font-weight:700; letter-spacing:-.02em; margin:22px 0 0;">Agents propose.<br><span style="color:#39FF14; text-shadow:0 0 20px rgba(57,255,20,.4);">A human signs.</span></h1>
+          <p style="font-size:1.0625rem; max-width:52ch; margin:22px 0 0; color:#a9c2ab;">Ag3nt24 is a protocol droid framework for the seam between an inherited AI estate and a modern stack. Adapter roles read the old system, a deterministic kernel gates every crossing, and nothing changes state until a person puts their name on it.</p>
+          <p style="font-size:1.0625rem; max-width:52ch; margin:14px 0 0; color:#a9c2ab;">The bottleneck is authority, not capability.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:30px;">
+            <button onClick="{{ goAgent }}" style="font-family:Orbitron, sans-serif; font-size:.85rem; font-weight:600; letter-spacing:.04em; border:none; background:#FFD700; color:#0A0F0A; padding:13px 24px; border-radius:8px; cursor:pointer; box-shadow:0 2px 12px rgba(0,0,0,.3); transition:background .2s ease-out, transform .2s ease-out;" style-hover="background:#E6C200;" style-active="transform:translateY(-1px);">Read the protocol</button>
+            <button onClick="{{ goHades }}" style="font-family:Orbitron, sans-serif; font-size:.85rem; font-weight:600; letter-spacing:.04em; background:transparent; color:#00CED1; border:1.5px solid #1c5220; padding:13px 24px; border-radius:8px; cursor:pointer; transition:background .2s ease-out;" style-hover="background:rgba(0,206,209,.10);">What HADES does</button>
+          </div>
+        </div>
+        <div style="min-width:0; animation:azRise 420ms ease-out 80ms both;">
+          <div style="position:relative; display:grid; place-items:center;">
+            <div style="position:absolute; width:76%; aspect-ratio:1/1; border-radius:50%; background:radial-gradient(circle, rgba(57,255,20,.22), rgba(0,206,209,.10) 55%, transparent 72%); filter:blur(18px);"></div>
+            <img src="assets/ag3nt24-emblem.png" alt="Ag3nt24 protocol droid emblem: a droid between a legacy estate and a modern stack, with a human authorization seal" style="position:relative; width:100%; max-width:520px; height:auto; display:block;">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <sc-if value="{{ statusBanner }}" hint-placeholder-val="{{ true }}">
+    <section style="padding:0 1.5rem;">
+      <div style="max-width:1280px; margin:0 auto; background:rgba(155,48,255,.10); border:1px solid rgba(155,48,255,.32); border-radius:8px; padding:clamp(1.75rem,4vw,2.5rem); display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:clamp(1.5rem,3vw,3rem); box-shadow:0 2px 12px rgba(0,0,0,.3);">
+        <div style="min-width:0;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#9B30FF;">Status, honest</div>
+          <h2 style="font-family:Orbitron, sans-serif; font-size:1.5rem; font-weight:700; margin:10px 0 0; line-height:1.24;">Nothing in this repository is production capability.</h2>
+          <p style="margin:12px 0 0; color:#a9c2ab; font-size:1rem;">Read the system first, then choose. There is no benchmark and no benchmark claim.</p>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px; align-content:start; min-width:0;">
+          <div style="background:rgba(10,15,10,.55); border:1px solid #1c5220; border-radius:8px; padding:16px 18px;">
+            <div style="font-family:'JetBrains Mono', monospace; font-size:1.5rem; font-weight:500; color:#FFD700;">0</div>
+            <div style="font-size:.9375rem; color:#a9c2ab; margin-top:4px;">Implemented agents. The 24 are definitions, one per pattern.</div>
+          </div>
+          <div style="background:rgba(10,15,10,.55); border:1px solid #1c5220; border-radius:8px; padding:16px 18px;">
+            <div style="font-family:'JetBrains Mono', monospace; font-size:1.5rem; font-weight:500; color:#39FF14;">81/81</div>
+            <div style="font-size:.9375rem; color:#a9c2ab; margin-top:4px;">Conformance checks passing. Registry 24/24, join 24/24, exit 0.</div>
+          </div>
+          <div style="background:rgba(10,15,10,.55); border:1px solid #1c5220; border-radius:8px; padding:16px 18px;">
+            <div style="font-family:'JetBrains Mono', monospace; font-size:1.5rem; font-weight:500; color:#00CED1;">29</div>
+            <div style="font-size:.9375rem; color:#a9c2ab; margin-top:4px;">Architecture decision records. Everything under docs is specification.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <section style="padding:clamp(4rem,8vw,8rem) 1.5rem 0;">
+      <div style="max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:clamp(2rem,5vw,4rem); align-items:start;">
+        <div style="min-width:0;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#FF69B4;">What is Ag3nt24</div>
+          <h2 style="font-family:Orbitron, sans-serif; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em; margin:12px 0 0;">One protocol droid, a roster of 24, and a gate nobody walks around.</h2>
+          <p style="margin:18px 0 0; color:#a9c2ab; max-width:52ch;">The protocol droid picks the team for the job. The team returns findings and proposals. HADES is where a person turns them into actions.</p>
+          <button onClick="{{ goAgent }}" style="margin-top:22px; font-family:Orbitron, sans-serif; font-weight:600; font-size:.8rem; letter-spacing:.04em; background:transparent; border:1.5px solid #1c5220; color:#00CED1; padding:12px 20px; border-radius:8px; cursor:pointer; white-space:nowrap; transition:background .2s ease-out;" style-hover="background:rgba(0,206,209,.10);">The full roster</button>
+        </div>
+        <div style="display:grid; gap:12px; min-width:0;">
+          <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px; box-shadow:0 2px 12px rgba(0,0,0,.3); transition:background .2s ease-out, box-shadow .2s ease-out;" style-hover="background:rgba(10,61,10,.55); box-shadow:0 4px 18px rgba(0,0,0,.4);">
+            <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1.0625rem; font-weight:500; letter-spacing:.01em;">Scouts make first contact</h3>
+            <p style="margin:10px 0 0; color:#a9c2ab;">A deterministic layer under the 24 reads the estate. Read-only discovery does not gate; anything that writes, mutates, deploys or commands does.</p>
+          </div>
+          <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px; box-shadow:0 2px 12px rgba(0,0,0,.3); transition:background .2s ease-out, box-shadow .2s ease-out;" style-hover="background:rgba(10,61,10,.55); box-shadow:0 4px 18px rgba(0,0,0,.4);">
+            <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1.0625rem; font-weight:500; letter-spacing:.01em;">The kernel is the anti-corruption layer</h3>
+            <p style="margin:10px 0 0; color:#a9c2ab;">Four short gates of straight-line boolean logic on slot indices. No I/O, no clock, no randomness. Every verdict reproduces on any day, and clearing the ACL is never authorization to act.</p>
+          </div>
+          <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px; box-shadow:0 2px 12px rgba(0,0,0,.3); transition:background .2s ease-out, box-shadow .2s ease-out;" style-hover="background:rgba(10,61,10,.55); box-shadow:0 4px 18px rgba(0,0,0,.4);">
+            <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1.0625rem; font-weight:500; letter-spacing:.01em;">Twenty-four patterns, fixed</h3>
+            <p style="margin:10px 0 0; color:#a9c2ab;">Each role is bound to one ITF Taekwon-Do pattern, Chon-Ji through Tong-Il, for the discipline that pattern teaches. The slot is the only numbering the framework uses: receipts, telemetry tags and charters all carry it.</p>
+          </div>
+          <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px; box-shadow:0 2px 12px rgba(0,0,0,.3); transition:background .2s ease-out, box-shadow .2s ease-out;" style-hover="background:rgba(10,61,10,.55); box-shadow:0 4px 18px rgba(0,0,0,.4);">
+            <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1.0625rem; font-weight:500; letter-spacing:.01em;">Fail closed</h3>
+            <p style="margin:10px 0 0; color:#a9c2ab;">On uncertainty, missing artifacts, invalid signatures or anomalies: deny. Every human decision writes one receipt, hash-chained to the one before it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(4rem,8vw,8rem) 1.5rem 0;">
+      <div style="max-width:1280px; margin:0 auto;">
+        <div style="background:linear-gradient(160deg, rgba(10,61,10,.85), rgba(10,15,10,.6)); border:1px solid #1c5220; border-radius:8px; padding:clamp(2rem,5vw,3.5rem); position:relative; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.3);">
+          <div style="position:absolute; right:-90px; bottom:-140px; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle, rgba(0,206,209,.20), rgba(10,61,10,0) 68%); pointer-events:none;"></div>
+          <div style="position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,4vw,4rem); align-items:center;">
+            <div style="min-width:0;">
+              <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#FFD700;">What is HADES</div>
+              <h2 style="font-family:Orbitron, sans-serif; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em; margin:12px 0 0;">The control room at the boundary.</h2>
+              <p style="margin:16px 0 0; color:#a9c2ab;">HADES is the human's only surface: a data lake and engineering platform for anti-corruption where scouts contact the legacy system and hand off to the team. It holds the gate, the receipt writer, the prompt store, the ETL review and all telemetry.</p>
+              <button onClick="{{ goHades }}" style="margin-top:24px; font-family:Orbitron, sans-serif; font-weight:600; font-size:.8rem; letter-spacing:.04em; background:#39FF14; color:#0A0F0A; border:none; padding:12px 22px; border-radius:8px; cursor:pointer; transition:background .2s ease-out;" style-hover="background:#2FE00F;" style-active="transform:translateY(-1px);">Inside HADES</button>
+            </div>
+            <div style="display:grid; gap:12px; min-width:0;">
+              <div style="background:rgba(10,15,10,.55); border:1px solid #1c5220; border-radius:8px; padding:20px 22px;">
+                <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; color:#39FF14; letter-spacing:.04em;">ON THE WAY IN</div>
+                <div style="font-family:Orbitron, sans-serif; font-weight:500; font-size:1rem; margin-top:6px;">Human Authorized Data Evaluation System</div>
+                <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">Ingested data is sorted, validated and transformed so the current structures and the source of truth can be identified.</p>
+              </div>
+              <div style="background:rgba(10,15,10,.55); border:1px solid #1c5220; border-radius:8px; padding:20px 22px;">
+                <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; color:#FFD700; letter-spacing:.04em;">ON THE WAY OUT</div>
+                <div style="font-family:Orbitron, sans-serif; font-weight:500; font-size:1rem; margin-top:6px;">Human Authorized Data Eradication Sequence</div>
+                <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">Sandbox, security audit, gate request, a human signature, one receipt, then execution. No auto-eradication path under any condition.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(4rem,8vw,8rem) 1.5rem 0;">
+      <div style="max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,5vw,4rem); align-items:center;">
+        <div style="min-width:0;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#FF69B4;">Built in the open</div>
+          <h2 style="font-family:Orbitron, sans-serif; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em; margin:12px 0 0;">Apache-2.0, every ruling on the record.</h2>
+          <p style="margin:16px 0 0; color:#a9c2ab; max-width:58ch;">The design is public before the capability is. Twenty-nine architecture decision records, the ended v1.0.0 carried as read-only prior art, and a conformance gate that is never adjusted to make a run pass. Every commit carries a DCO sign-off.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;">
+            <span style="font-family:'JetBrains Mono', monospace; font-size:.8rem; background:rgba(32,178,170,.14); border:1px solid rgba(32,178,170,.36); color:#5fd6ce; border-radius:8px; padding:7px 14px; white-space:nowrap;">npm run build:kernel</span>
+            <span style="font-family:'JetBrains Mono', monospace; font-size:.8rem; background:rgba(32,178,170,.14); border:1px solid rgba(32,178,170,.36); color:#5fd6ce; border-radius:8px; padding:7px 14px; white-space:nowrap;">npm run conform</span>
+            <span style="font-family:'JetBrains Mono', monospace; font-size:.8rem; background:rgba(32,178,170,.14); border:1px solid rgba(32,178,170,.36); color:#5fd6ce; border-radius:8px; padding:7px 14px; white-space:nowrap;">uv run pytest</span>
+          </div>
+        </div>
+        <div style="min-width:0; background:rgba(10,15,10,.75); border:1px solid #1c5220; border-radius:8px; padding:24px 26px; font-family:'JetBrains Mono', monospace; font-size:.82rem; line-height:1.9; color:#a9c2ab; box-shadow:0 2px 12px rgba(0,0,0,.35);">
+          <div style="color:#7f9a81;">$ npm run conform</div>
+          <div><span style="color:#39FF14;">checks:</span> 81/81</div>
+          <div><span style="color:#39FF14;">registry:</span> 24/24 match</div>
+          <div><span style="color:#39FF14;">join:</span> 24/24 match</div>
+          <div><span style="color:#FFD700;">scenarios:</span> 5/5 match</div>
+          <div style="color:#7f9a81;">exit 0</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(4rem,8vw,8rem) 1.5rem clamp(3rem,5vw,5rem);">
+      <div style="max-width:1280px; margin:0 auto; border-top:1px solid #143a16; padding-top:clamp(2.5rem,5vw,4rem); display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,5vw,4rem);">
+        <div style="min-width:0;">
+          <h2 style="font-family:Orbitron, sans-serif; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em; margin:0;">Read the system first.</h2>
+          <p style="margin:14px 0 0; color:#a9c2ab; max-width:52ch;">Ag3nt24 is built by classHuman AI LLC, a legacy AI systems modernization research and open-source organization. WDVA Certified Veteran Owned Business, cert #WDVACHAI26.</p>
+          <p style="margin:14px 0 0; font-family:'JetBrains Mono', monospace; font-size:.84rem; color:#FFD700;">LAHA: Love All Humans Always.</p>
+        </div>
+        <div style="display:grid; gap:10px; align-content:start; min-width:0;">
+          <a href="https://github.com/MenokoOG/Ag3nt24-oss" style="display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:15px 20px; font-family:Orbitron, sans-serif; font-size:.85rem; font-weight:500; color:#e6f2e6; transition:background .2s ease-out;" style-hover="background:rgba(57,255,20,.10); color:#39FF14;"><span>GitHub · MenokoOG/Ag3nt24-oss</span><span style="font-family:'JetBrains Mono', monospace; color:#00CED1;">&#8594;</span></a>
+          <a href="https://classhuman.org" style="display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:15px 20px; font-family:Orbitron, sans-serif; font-size:.85rem; font-weight:500; color:#e6f2e6; transition:background .2s ease-out;" style-hover="background:rgba(57,255,20,.10); color:#39FF14;"><span>classhuman.org</span><span style="font-family:'JetBrains Mono', monospace; color:#00CED1;">&#8594;</span></a>
+          <a href="mailto:security@classhuman.org" style="display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:15px 20px; font-family:Orbitron, sans-serif; font-size:.85rem; font-weight:500; color:#e6f2e6; transition:background .2s ease-out;" style-hover="background:rgba(57,255,20,.10); color:#39FF14;"><span>security@classhuman.org</span><span style="font-family:'JetBrains Mono', monospace; color:#00CED1;">&#8594;</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isAgent }}">
+  <main style="padding:clamp(3rem,6vw,5rem) 1.5rem clamp(3rem,5vw,5rem);">
+    <div style="max-width:1280px; margin:0 auto;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,5vw,4rem); align-items:end;">
+        <div style="min-width:0;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#FF69B4;">Product overview</div>
+          <h1 style="margin:12px 0 0;"><img src="assets/ag3nt24-banner.png" alt="Ag3nt24" style="width:100%; max-width:620px; height:auto; display:block; border-radius:8px; border:1px solid #1c5220;"></h1>
+          <p style="margin:18px 0 0; font-size:1.0625rem; color:#a9c2ab; max-width:56ch;">A protocol droid framework with an anti-corruption layer. Adapter roles read the inherited AI estate on one side and speak to a modern stack on the other, behind a boundary a human controls.</p>
+        </div>
+        <div style="min-width:0; background:rgba(155,48,255,.10); border:1px solid rgba(155,48,255,.32); border-radius:8px; padding:22px 24px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#9B30FF;">Read this first</div>
+          <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">The 24 are a designed protocol roster, one role per ITF pattern. They are definitions and charters, not running agents. Implemented agents: 0.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(3rem,6vw,5rem); display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px;">
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:22px 24px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; color:#39FF14;">01 OBSERVE</div>
+          <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">Scouts make first contact with the estate. Deterministic, under the 24, read-only.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:22px 24px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; color:#00CED1;">02 ORIENT</div>
+          <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">The protocol droid picks the team from the 24 for the job in front of it.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:22px 24px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; color:#9B30FF;">03 DECIDE</div>
+          <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">The team returns findings and proposals. Tong-Il reconciles them into one proposal for the gate.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:22px 24px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; color:#FFD700;">04 ACT</div>
+          <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">A human signs in HADES. One receipt, hash-chained. Then state changes, and not before.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(4rem,8vw,7rem);">
+        <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#FFD700;">The formation</div>
+        <h2 style="font-family:Orbitron, sans-serif; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em; margin:12px 0 0;">One droid, twenty-four slots.</h2>
+        <p style="margin:14px 0 22px; color:#a9c2ab; max-width:62ch;">The protocol droid picks the team for the job in front of it. Hover a slot for its pattern and domain.</p>
+        <div style="border:1px solid #1c5220; border-radius:8px; overflow:hidden;">
+          <dc-import name="Ag3nt24 Formation Dark" hint-size="100%,700px"></dc-import>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(4rem,8vw,7rem); display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:clamp(2rem,4vw,3rem); align-items:start;">
+        <div style="min-width:0;">
+          <h2 style="font-family:Orbitron, sans-serif; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em; margin:0;">The protocol roster</h2>
+          <p style="margin:14px 0 0; color:#a9c2ab; max-width:46ch;">Twenty-four roles in ITF syllabus order, frozen. The slot number is what receipts, telemetry tags and charters carry.</p>
+          <button onClick="{{ toggleRune }}" style="margin-top:18px; font-family:'JetBrains Mono', monospace; font-size:.8rem; background:transparent; border:1.5px solid #1c5220; color:#00CED1; padding:10px 16px; border-radius:8px; cursor:pointer; white-space:nowrap; transition:background .2s ease-out;" style-hover="background:rgba(0,206,209,.10);">{{ runeLabel }}</button>
+        </div>
+        <div style="min-width:0; background:rgba(10,15,10,.55); border:1px solid #1c5220; border-radius:8px; overflow:hidden; grid-column:span 2;">
+          <sc-for list="{{ roster }}" as="r" hint-placeholder-count="6">
+            <div style="display:grid; grid-template-columns:34px 52px minmax(0,1fr) minmax(0,1.6fr) 70px; gap:14px; align-items:center; padding:13px 20px; border-bottom:1px solid #143a16; transition:background .2s ease-out;" style-hover="background:rgba(57,255,20,.07);">
+              <div role="presentation" style="width:34px; height:34px; border-radius:50%; background-image:{{ r.iconCss }}; background-size:cover; background-color:rgba(57,255,20,.07);"></div>
+              <span style="font-family:'JetBrains Mono', monospace; font-size:.82rem; color:#0A0F0A; background:#39FF14; border-radius:8px; padding:3px 0; text-align:center; font-weight:500;">{{ r.slotLabel }}</span>
+              <span style="font-family:Orbitron, sans-serif; font-weight:500; font-size:.85rem;">{{ r.pattern }}</span>
+              <span style="font-size:1rem; color:#a9c2ab;">{{ r.domain }}</span>
+              <span style="font-family:'JetBrains Mono', monospace; font-size:.74rem; color:#FFD700; text-align:right;">{{ r.runeText }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isHades }}">
+  <main style="padding:clamp(3rem,6vw,5rem) 1.5rem clamp(3rem,5vw,5rem);">
+    <div style="max-width:1280px; margin:0 auto;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,5vw,4rem); align-items:end;">
+        <div style="min-width:0;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#FF69B4;">Product overview</div>
+          <h1 style="font-family:Orbitron, sans-serif; font-size:clamp(2.5rem,5vw,4rem); line-height:1.08; font-weight:700; letter-spacing:-.02em; margin:12px 0 0;">HADES</h1>
+          <p style="margin:18px 0 0; font-size:1.0625rem; color:#a9c2ab; max-width:56ch;">The control room of the framework and the human's only surface. Humans make the decisions here; the team returns findings and proposals, and HADES is where they become actions.</p>
+          <a href="HADES Dashboard Amazonia.dc.html" style="display:inline-block; margin-top:24px; font-family:Orbitron, sans-serif; font-size:.85rem; font-weight:600; letter-spacing:.04em; background:#FFD700; color:#0A0F0A; padding:13px 24px; border-radius:8px; white-space:nowrap;" style-hover="background:#E6C200; color:#0A0F0A;">Open the control room</a>
+        </div>
+        <div style="min-width:0; background:rgba(255,215,0,.10); border:1px solid rgba(255,215,0,.32); border-radius:8px; padding:22px 24px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#FFD700;">Two gates, two words</div>
+          <p style="margin:8px 0 0; font-size:1rem; color:#a9c2ab;">The kernel is the ACL: machine, logs only. The gate is the human gate, in HADES, the only thing that writes receipts.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(3rem,6vw,5rem); display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:12px;">
+        <div style="background:rgba(57,255,20,.08); border:1px solid rgba(57,255,20,.34); border-radius:8px; padding:24px 26px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#39FF14;">Regular, good data</div>
+          <h3 style="font-family:Orbitron, sans-serif; font-size:1.25rem; font-weight:700; line-height:1.25; margin:10px 0 0;">Human Authorized Data Evaluation System</h3>
+          <p style="margin:10px 0 0; color:#a9c2ab;">On the way in. Ingested data is sorted, validated and transformed so the current structures and the source of truth can be identified. This is what HADES means for every bucket except one.</p>
+        </div>
+        <div style="background:rgba(255,105,180,.08); border:1px solid rgba(255,105,180,.34); border-radius:8px; padding:24px 26px;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#FF69B4;">Bad data</div>
+          <h3 style="font-family:Orbitron, sans-serif; font-size:1.25rem; font-weight:700; line-height:1.25; margin:10px 0 0;">Human Authorized Data Eradication Sequence</h3>
+          <p style="margin:10px 0 0; color:#a9c2ab;">On the way out, and only for the bad bucket. Sandbox, security audit, gate request, a human signature, one receipt, then execution. No auto-eradication path under any condition.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(3rem,6vw,5rem);">
+        <div style="font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:#39FF14;">The sort taxonomy</div>
+        <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+          <span style="font-family:'JetBrains Mono', monospace; font-size:.85rem; background:rgba(57,255,20,.14); border:1px solid rgba(57,255,20,.4); color:#39FF14; border-radius:8px; padding:8px 16px; white-space:nowrap;">good</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:.85rem; background:rgba(255,105,180,.14); border:1px solid rgba(255,105,180,.4); color:#FF69B4; border-radius:8px; padding:8px 16px; white-space:nowrap;">bad</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:.85rem; background:rgba(255,215,0,.14); border:1px solid rgba(255,215,0,.4); color:#FFD700; border-radius:8px; padding:8px 16px; white-space:nowrap;">messy</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:.85rem; background:rgba(0,206,209,.14); border:1px solid rgba(0,206,209,.4); color:#00CED1; border-radius:8px; padding:8px 16px; white-space:nowrap;">work-data</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:.85rem; background:rgba(155,48,255,.16); border:1px solid rgba(155,48,255,.42); color:#c07dff; border-radius:8px; padding:8px 16px; white-space:nowrap;">new</span>
+          <span style="font-size:1rem; color:#a9c2ab; padding-left:6px;">Only <strong style="font-family:'JetBrains Mono', monospace; font-weight:500; color:#FF69B4;">bad</strong> reaches the eradication sequence.</span>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(3rem,6vw,5rem); display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:12px;">
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px;">
+          <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1rem; font-weight:500;">The gate and the receipt writer</h3>
+          <p style="margin:10px 0 0; font-size:1rem; color:#a9c2ab;">One signature, one receipt, then state changes. Approve, deny and timeout all write a receipt. No execution path skips the gate.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px;">
+          <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1rem; font-weight:500;">The prompt store</h3>
+          <p style="margin:10px 0 0; font-size:1rem; color:#a9c2ab;">System prompts and the 24 charters as deployed artifacts, versioned, with the source commit SHA. Authoring stays in the repository.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px;">
+          <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1rem; font-weight:500;">Pipeline review</h3>
+          <p style="margin:10px 0 0; font-size:1rem; color:#a9c2ab;">Human interaction with the ETL pipeline: the sort, the validation rules, the transforms, and the review of each bucket.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px;">
+          <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1rem; font-weight:500;">Telemetry, tagged by slot</h3>
+          <p style="margin:10px 0 0; font-size:1rem; color:#a9c2ab;">One pipeline for every scout, pattern and kernel call. Group view aggregates the tag, single-slot view filters it. Same rows, two queries.</p>
+        </div>
+        <div style="background:rgba(10,61,10,.38); border:1px solid #1c5220; border-radius:8px; padding:24px 26px;">
+          <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1rem; font-weight:500;">The legacy-AI channel</h3>
+          <p style="margin:10px 0 0; font-size:1rem; color:#a9c2ab;">When the team needs to talk to the inherited AI system directly, it happens here, through the kernel, logged.</p>
+        </div>
+        <div style="background:rgba(0,206,209,.10); border:1px solid rgba(0,206,209,.34); border-radius:8px; padding:24px 26px;">
+          <h3 style="font-family:Orbitron, sans-serif; margin:0; font-size:1rem; font-weight:500; color:#00CED1;">Accessibility-first design</h3>
+          <p style="margin:10px 0 0; font-size:1rem; color:#a9c2ab;">A bad gate interface is a safety problem. Operator workflow and gate ergonomics have an owner in the roster: slot 15, Juche.</p>
+        </div>
+      </div>
+
+      <figure style="margin:clamp(3rem,6vw,5rem) 0 0; padding:0;">
+        <img src="assets/hades-flow.png" alt="HADES flow: scout, pattern and kernel proposals converge on the human gate; one signature writes one receipt into an append-only chain, and state changes only after it. The data sort holds good, bad, messy, work-data and new; only bad reaches eradication." style="width:100%; height:auto; display:block; border-radius:8px; border:1px solid #1c5220;">
+        <figcaption style="margin-top:10px; font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; color:#7f9a81;">PROPOSE · HUMAN GATE · RECEIPT · STATE CHANGE</figcaption>
+      </figure>
+
+      <div style="margin-top:clamp(4rem,8vw,7rem); background:linear-gradient(160deg, rgba(10,61,10,.8), rgba(10,15,10,.7)); border:1px solid #1c5220; border-radius:8px; padding:clamp(2rem,5vw,3.5rem);">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(2rem,4vw,3.5rem); align-items:center;">
+          <div style="min-width:0;">
+            <h2 style="font-family:Orbitron, sans-serif; margin:0; font-size:2.25rem; font-weight:700; line-height:1.16; letter-spacing:-.015em;">One receipt per decision, chained.</h2>
+            <p style="margin:14px 0 0; color:#a9c2ab;">A receipt records the proposing slot, the proposed action, the evidence hash, the decision, the deciding human and the timestamp. A missing or altered receipt breaks the chain, and a broken chain is an incident, not a warning.</p>
+          </div>
+          <div style="min-width:0; font-family:'JetBrains Mono', monospace; font-size:.8rem; line-height:2; background:rgba(10,15,10,.7); border:1px solid #143a16; border-radius:8px; padding:22px 24px; color:#a9c2ab; overflow-x:auto;">
+            <div><span style="display:inline-block; width:9ch; color:#7f9a81;">slot</span>a24-03-do-san</div>
+            <div><span style="display:inline-block; width:9ch; color:#7f9a81;">action</span>eradicate :: bucket=bad</div>
+            <div><span style="display:inline-block; width:9ch; color:#7f9a81;">evidence</span><span style="color:#FFD700;">a41f9c2e8b07d5&#8230;</span></div>
+            <div><span style="display:inline-block; width:9ch; color:#7f9a81;">decision</span><span style="color:#39FF14;">APPROVE</span></div>
+            <div><span style="display:inline-block; width:9ch; color:#7f9a81;">by</span>operator@classhuman.org</div>
+            <div><span style="display:inline-block; width:9ch; color:#7f9a81;">prev</span><span style="color:#9B30FF;">7d10be44af931c&#8230;</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <footer style="border-top:1px solid #143a16; margin-top:clamp(3rem,6vw,5rem);">
+    <div style="max-width:1280px; margin:0 auto; padding:26px 1.5rem; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; font-size:.9375rem; color:#7f9a81;">
+      <span>classHuman AI LLC · Legacy AI systems modernization · Apache-2.0</span>
+      <span style="font-family:'JetBrains Mono', monospace; font-size:.8rem;">WDVA Certified Veteran Owned · #WDVACHAI26</span>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;statusBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+const REGISTRY = [
+  [1,"Chon-Ji","Systems Architecture (incl. electrical / OT-SCADA)",22],
+  [2,"Dan-Gun","Legacy Code Archaeology",24],
+  [3,"Do-San","Data Engineering and Migration",5],
+  [4,"Won-Hyo","Requirements and Domain Modeling",18],
+  [5,"Yul-Gok","Formal Methods and Verification",6],
+  [6,"Joong-Gun","Security Engineering",9],
+  [7,"Toi-Gye","Knowledge Management",12],
+  [8,"Hwa-Rang","Program and Delivery Coordination",8],
+  [9,"Choong-Moo","Reliability Engineering",21],
+  [10,"Kwang-Gae","Cloud and Container Platform",16],
+  [11,"Po-Eun","Interface and Contract Governance",7],
+  [12,"Ge-Baek","Test Engineering",11],
+  [13,"Eui-Am","Cost Engineering and FinOps",1],
+  [14,"Choong-Jang","Release Engineering and Change Control",10],
+  [15,"Juche","Human Factors and Operator Experience",14],
+  [16,"Sam-Il","Regulatory and Compliance",23],
+  [17,"Yoo-Sin","Performance Engineering",19],
+  [18,"Choi-Yong","Incident Response and Forensics",17],
+  [19,"Yon-Gae","Network and Protocol Engineering",2],
+  [20,"Ul-Ji","Adversarial Testing",3],
+  [21,"Moon-Moo","Observability and Telemetry",15],
+  [22,"So-San","Business Continuity and Disaster Recovery",13],
+  [23,"Se-Jong","Data Standards and Canonical Schema",4],
+  [24,"Tong-Il","Integration and Synthesis",20]
+];
+
+class Component extends DCLogic {
+  state = { view: "home", rune: false };
+  set(view) { this.setState({ view }); window.scrollTo(0, 0); }
+  renderVals() {
+    const v = this.state.view;
+    const rune = this.state.rune;
+    return {
+      isHome: v === "home",
+      isAgent: v === "agent",
+      isHades: v === "hades",
+      statusBanner: (this.props.statusBanner ?? true),
+      goHome: () => this.set("home"),
+      goAgent: () => this.set("agent"),
+      goHades: () => this.set("hades"),
+      toggleRune: () => this.setState(s => ({ rune: !s.rune })),
+      runeLabel: rune ? "hide kernel rune numbers" : "show kernel rune numbers",
+      roster: REGISTRY.map(([slot, pattern, domain, r]) => ({
+        slotLabel: String(slot).padStart(2, "0"),
+        iconCss: 'url("assets/pattern-' + String(slot).padStart(2, "0") + '.png")',
+        pattern,
+        domain,
+        runeText: rune ? "rune " + r : ""
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

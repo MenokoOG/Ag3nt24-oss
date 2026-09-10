@@ -1,0 +1,110 @@
+/* Ag3nt24 / HADES — Amazônia Futurista design tokens
+   Drop-in. Every value below is taken from the reference prototypes in
+   design-references/. Do not introduce colors, radii or fonts that are not here. */
+
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---- Ground and surfaces (dark only; there is no light theme) ---- */
+  --ag-bg:            #0A0F0A;   /* page ground, Preto Amazônico */
+  --ag-bg-mid:        #0b1a0d;   /* page gradient midpoint */
+  --ag-bg-deep:       #0A3D0A;   /* page gradient foot, Verde Floresta */
+  --ag-surface:       #0d1c0f;   /* opaque card / log / sidebar surface */
+  --ag-surface-tint:  rgba(10,61,10,.38);  /* standard card fill over the ground */
+  --ag-surface-glass: rgba(10,15,10,.86);  /* sticky nav / header glass, blur 12px */
+  --ag-border:        #1c5220;   /* card and control border */
+  --ag-border-faint:  #143a16;   /* row rules, footer rules */
+
+  /* ---- Ink ---- */
+  --ag-ink:           #e6f2e6;   /* primary text */
+  --ag-ink-muted:     #a9c2ab;   /* body copy, secondary */
+  --ag-ink-faint:     #7f9a81;   /* mono labels, meta */
+
+  /* ---- Accents ---- */
+  --ag-neon:          #39FF14;   /* Verde Neon — primary accent, "good"/APPROVE */
+  --ag-cyan:          #00CED1;   /* Azul Bioluminescente — links, focus, work-data */
+  --ag-purple:        #9B30FF;   /* Roxo Orquídea — emphasis, "new" */
+  --ag-purple-ink:    #c07dff;   /* purple text on dark tint (contrast-safe) */
+  --ag-gold:          #FFD700;   /* Amarelo Tucano — primary CTA, "messy", evidence */
+  --ag-pink:          #FF69B4;   /* Rosa Vitória-Régia — kickers, "bad", DENY */
+  --ag-turquoise:     #20B2AA;   /* Turquesa Rio — command chips */
+  --ag-turquoise-ink: #5fd6ce;   /* turquoise text on dark tint */
+  --ag-forest-btn:    #16601a;   /* dashboard primary button fill */
+  --ag-forest-btn-hi: #0f5410;   /* its pressed/hover fill */
+
+  /* ---- Status tint / ink pairs (fill, then text on that fill) ---- */
+  --ag-good-fill:      rgba(57,255,20,.24);   --ag-good-ink:      #39FF14;
+  --ag-bad-fill:       rgba(255,105,180,.14); --ag-bad-ink:       #FF69B4;
+  --ag-messy-fill:     rgba(255,215,0,.24);   --ag-messy-ink:     #FFD700;
+  --ag-workdata-fill:  rgba(0,206,209,.16);   --ag-workdata-ink:  #5fd6ce;
+  --ag-new-fill:       rgba(155,48,255,.16);  --ag-new-ink:       #c07dff;
+
+  /* ---- Type ---- */
+  --ag-font-display: Orbitron, system-ui, sans-serif;  /* headings, UI labels, buttons */
+  --ag-font-body:    Rajdhani, system-ui, sans-serif;  /* paragraphs, table cells */
+  --ag-font-mono:    "JetBrains Mono", monospace;      /* slots, hashes, tags, commands */
+
+  --ag-hero:  clamp(2.5rem, 5vw, 4rem);  /* weight 700, letter-spacing -.02em */
+  --ag-h1:    2.25rem;
+  --ag-h2:    1.5rem;
+  --ag-body:  1rem;      /* line-height 1.6 */
+  --ag-small: .875rem;
+  --ag-mono:  .78rem;    /* chips and meta; .8rem in log/receipt blocks */
+
+  /* ---- Space and measure ---- */
+  --ag-unit:      .5rem;
+  --ag-container: 1280px;
+  --ag-gutter:    1.5rem;
+  --ag-section:   clamp(4rem, 8vw, 8rem);
+
+  /* ---- Shape ---- */
+  --ag-radius: 8px;   /* everything: cards, buttons, inputs, chips, images */
+  /* 50% is used ONLY where width == height: status dots, logo discs, pattern badges */
+
+  /* ---- Elevation ---- */
+  --ag-shadow:      0 2px 12px rgba(0,0,0,.3);
+  --ag-shadow-lift: 0 4px 18px rgba(0,0,0,.4);
+
+  /* ---- Motion ---- */
+  --ag-ease:  ease-out;
+  --ag-fast:  200ms;   /* hover / color shift */
+  --ag-entry: 420ms;   /* fade + translateY(16px → 0) */
+
+  /* ---- Layers ---- */
+  --ag-z-base: 0;
+  --ag-z-nav:  100;
+  --ag-z-overlay: 200;
+  --ag-z-modal: 300;
+  --ag-z-toast: 500;
+}
+
+/* Only transform and opacity are animated. */
+@keyframes ag-rise    { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes ag-fly     { 0%, 100% { transform: translate3d(0,0,0); opacity: .25; } 45% { opacity: 1; } 50% { transform: translate3d(12px,-28px,0); } }
+@keyframes ag-breathe { 0%, 100% { opacity: .4; } 50% { opacity: .95; } }
+@keyframes ag-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(240%); } }
+
+/* Base */
+html, body { margin: 0; padding: 0; background: var(--ag-bg); }
+* { box-sizing: border-box; }
+body {
+  color: var(--ag-ink);
+  font-family: var(--ag-font-body);
+  font-size: var(--ag-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--ag-font-display); letter-spacing: -.015em; }
+a { color: var(--ag-cyan); text-decoration: none; transition: color var(--ag-fast) var(--ag-ease); }
+a:hover { color: var(--ag-neon); }
+::selection { background: var(--ag-neon); color: var(--ag-bg); }
+:focus-visible { outline: 2px solid var(--ag-cyan); outline-offset: 2px; }
+
+/* Any mono chip, tag or pill label must never wrap inside its own pill. */
+.ag-chip {
+  font-family: var(--ag-font-mono);
+  font-size: var(--ag-mono);
+  border-radius: var(--ag-radius);
+  padding: 7px 16px;
+  white-space: nowrap;
+}
