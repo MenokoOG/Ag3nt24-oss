@@ -1,0 +1,123 @@
+/* Ag3nt24 / HADES — Amazônia Futurista design tokens.
+   Values are copied from docs/design_handoff_amazonia/design-tokens.css.
+   Fonts are self-hosted through next/font (see app/layout.tsx), which sets
+   --font-orbitron, --font-rajdhani and --font-jetbrains on <html>.
+   Do not introduce colors, radii or fonts that are not here. */
+
+:root {
+  /* ---- Ground and surfaces (dark only; there is no light theme) ---- */
+  --ag-bg:            #0A0F0A;
+  --ag-bg-mid:        #0b1a0d;
+  --ag-bg-deep:       #0A3D0A;
+  --ag-surface:       #0d1c0f;
+  --ag-surface-tint:  rgba(10,61,10,.38);
+  --ag-surface-glass: rgba(10,15,10,.86);
+  --ag-border:        #1c5220;
+  --ag-border-faint:  #143a16;
+
+  /* ---- Ink ---- */
+  --ag-ink:           #e6f2e6;
+  --ag-ink-muted:     #a9c2ab;
+  --ag-ink-faint:     #7f9a81;
+
+  /* ---- Accents ---- */
+  --ag-neon:          #39FF14;
+  --ag-cyan:          #00CED1;
+  --ag-purple:        #9B30FF;
+  --ag-purple-ink:    #c07dff;
+  --ag-gold:          #FFD700;
+  --ag-gold-hi:       #E6C200;
+  --ag-neon-hi:       #2FE00F;
+  --ag-pink:          #FF69B4;
+  --ag-turquoise:     #20B2AA;
+  --ag-turquoise-ink: #5fd6ce;
+  --ag-forest-btn:    #16601a;
+  --ag-forest-btn-hi: #0f5410;
+
+  /* ---- Status tint / ink pairs ---- */
+  --ag-good-fill:      rgba(57,255,20,.24);   --ag-good-ink:      #39FF14;
+  --ag-bad-fill:       rgba(255,105,180,.14); --ag-bad-ink:       #FF69B4;
+  --ag-messy-fill:     rgba(255,215,0,.24);   --ag-messy-ink:     #FFD700;
+  --ag-workdata-fill:  rgba(0,206,209,.16);   --ag-workdata-ink:  #5fd6ce;
+  --ag-new-fill:       rgba(155,48,255,.16);  --ag-new-ink:       #c07dff;
+
+  /* ---- Type ---- */
+  --ag-font-display: var(--font-orbitron), Orbitron, system-ui, sans-serif;
+  --ag-font-body:    var(--font-rajdhani), Rajdhani, system-ui, sans-serif;
+  --ag-font-mono:    var(--font-jetbrains), "JetBrains Mono", monospace;
+
+  --ag-hero:  clamp(2.5rem, 5vw, 4rem);
+  --ag-h1:    2.25rem;
+  --ag-h2:    1.5rem;
+  --ag-body:  1rem;
+  --ag-small: .875rem;
+  --ag-mono:  .78rem;
+
+  /* ---- Space and measure ---- */
+  --ag-unit:      .5rem;
+  --ag-container: 1280px;
+  --ag-gutter:    1.5rem;
+  --ag-section:   clamp(4rem, 8vw, 8rem);
+
+  /* ---- Shape ---- */
+  --ag-radius: 8px;
+
+  /* ---- Elevation ---- */
+  --ag-shadow:      0 2px 12px rgba(0,0,0,.3);
+  --ag-shadow-lift: 0 4px 18px rgba(0,0,0,.4);
+
+  /* ---- Motion ---- */
+  --ag-ease:  ease-out;
+  --ag-fast:  200ms;
+  --ag-entry: 420ms;
+
+  /* ---- Layers ---- */
+  --ag-z-base: 0;
+  --ag-z-nav:  100;
+  --ag-z-overlay: 200;
+  --ag-z-modal: 300;
+  --ag-z-toast: 500;
+}
+
+/* Only transform and opacity are animated. */
+@keyframes ag-rise    { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes ag-fly     { 0%, 100% { transform: translate3d(0,0,0); opacity: .25; } 45% { opacity: 1; } 50% { transform: translate3d(12px,-28px,0); } }
+@keyframes ag-breathe { 0%, 100% { opacity: .4; } 50% { opacity: .95; } }
+@keyframes ag-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(240%); } }
+@keyframes ag-pulse   { from { opacity: .45; } to { opacity: 1; } }
+
+/* Base */
+html, body { margin: 0; padding: 0; background: var(--ag-bg); }
+* { box-sizing: border-box; }
+body {
+  color: var(--ag-ink);
+  font-family: var(--ag-font-body);
+  font-size: var(--ag-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--ag-font-display); letter-spacing: -.015em; }
+a { color: var(--ag-cyan); text-decoration: none; transition: color var(--ag-fast) var(--ag-ease); }
+a:hover { color: var(--ag-neon); }
+::selection { background: var(--ag-neon); color: var(--ag-bg); }
+:focus-visible { outline: 2px solid var(--ag-cyan); outline-offset: 2px; }
+button { font: inherit; }
+img { max-width: 100%; }
+
+/* Any mono chip, tag or pill label must never wrap inside its own pill. */
+.ag-chip {
+  font-family: var(--ag-font-mono);
+  font-size: var(--ag-mono);
+  border-radius: var(--ag-radius);
+  padding: 7px 16px;
+  white-space: nowrap;
+}
+
+/* Reduced motion: drop the fireflies, the shimmer and the entry translate; keep opacity. */
+@media (prefers-reduced-motion: reduce) {
+  .ag-firefly { display: none; }
+  .ag-rise { animation: none; opacity: 1; transform: none; }
+  .ag-shimmer { animation: none; }
+  .ag-breathe, .ag-pulse { animation: none; opacity: 1; }
+  *, *::before, *::after { transition-duration: 0ms !important; }
+}
