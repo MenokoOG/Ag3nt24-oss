@@ -1,0 +1,29 @@
+{
+  "name": "ag3nt24-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ag3nt24 public site and HADES dashboard demo. Static export for GitHub Pages.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "sync:registry": "node scripts/sync-registry.mjs",
+    "prebuild": "node scripts/sync-registry.mjs",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npx serve out",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.2",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "typescript": "^5.9.2"
+  }
+}

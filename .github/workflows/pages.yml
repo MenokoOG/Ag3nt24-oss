@@ -1,0 +1,67 @@
+name: Pages
+
+# Builds site/ as a static Next.js export and publishes it to GitHub Pages.
+# The site is a demo of the design in docs/design_handoff_amazonia; it has no
+# runtime, no backend and no secrets. Repository settings must have
+# Pages > Source set to "GitHub Actions" for the deploy job to succeed.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "conformance/registry.json"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build (next export)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install (locked)
+        run: npm ci
+
+      - name: Build
+        # Project site: served under /<repo-name>. The basePath is read at
+        # build time by next.config.mjs and src/lib/asset.ts.
+        env:
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/out
+
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
