@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SignInForm } from "@/components/dashboard/SignInForm";
 import { asset } from "@/lib/asset";
 
@@ -10,11 +11,11 @@ export default function SignInPage() {
       <div className="login">
         <div className="login__art">
           <div className="login__flare" aria-hidden="true" />
-          <div className="login__brand">
+          <Link href="/" className="login__brand" aria-label="Back to Ag3nt24 overview">
             <img src={asset("/assets/hades-mark.png")} alt="" />
             <strong>HADES</strong>
             <span className="login__brand-tag">control room</span>
-          </div>
+          </Link>
           <div className="login__copy">
             <img
               src={asset("/assets/hades-emblem.png")}

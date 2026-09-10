@@ -19,7 +19,7 @@
   position: absolute; top: -180px; left: -140px; width: 560px; height: 560px; border-radius: 8px;
   background: radial-gradient(circle, rgba(57,255,20,.12), rgba(10,15,10,0) 70%);
 }
-.login__brand { position: relative; display: flex; align-items: center; gap: 11px; }
+.login__brand { position: relative; display: flex; align-items: center; gap: 11px; color: inherit; text-decoration: none; }
 .login__brand img { width: 36px; height: 36px; display: block; }
 .login__brand strong { font-family: var(--ag-font-display); font-weight: 700; font-size: 1.05rem; }
 .login__brand-tag {
@@ -60,7 +60,7 @@
   background: var(--ag-surface); color: var(--ag-ink); padding: 24px 18px;
   display: flex; flex-direction: column; gap: 26px; position: sticky; top: 0; height: 100dvh;
 }
-.sidebar__brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+.sidebar__brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; color: inherit; text-decoration: none; }
 .sidebar__brand img { width: 32px; height: 32px; display: block; }
 .sidebar__brand strong { font-family: var(--ag-font-display); font-weight: 700; }
 .sidebar__nav { display: flex; flex-direction: column; gap: 4px; }

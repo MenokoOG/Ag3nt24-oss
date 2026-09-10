@@ -33,10 +33,10 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="dash">
       <div className="shell">
         <aside className="sidebar">
-          <div className="sidebar__brand">
+          <Link href="/" className="sidebar__brand" aria-label="Back to Ag3nt24 overview">
             <img src={asset("/assets/hades-mark.png")} alt="" />
             <strong>HADES</strong>
-          </div>
+          </Link>
           <nav className="sidebar__nav" aria-label="Dashboard">
             {SCREENS.map((s) => (
               <Link key={s.href} href={s.href} className="sidebar__link" aria-current={s.href === pathname ? "page" : undefined}>
