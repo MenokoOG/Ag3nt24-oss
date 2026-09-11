@@ -1,24 +1,22 @@
 # Ag3nt24 architecture overview
 
 **Version:** 0.1.0
-**Date:** 2026-08-28
+**Date:** 2026-09-11
 **Owner:** Lawrence Jefferson II
-**Status:** Design. Nothing in this document is implemented yet.
+**Status:** Design, with two modules built. Nothing here is a capability claim.
 
 ---
 
-## Rulings of 2026-09-09
-
-This overview is the 2026-08-28 design and is kept as the record of it. ADR-0025 superseded its stack (LangGraph, AgentCore, Bedrock, CloudWatch) with Docker and a model-agnostic adapter; ADR-0023 placed the COBOL kernel as the ACL; ADR-0024 added scouts; ADR-0027 made HADES the control room. The current design is `docs/plan/2026-09-09-ag3nt24-hades-plan.md`. Read the sections below for the run flow, the gate, the receipt chain and the node contract, which stand; read the plan for everything about where it runs.
-
-## As-built status (2026-09-05, second update)
+## As-built status, 2026-09-11
 
 Read this before anything else in the document.
 
-- **Implemented agents: 0.** Twenty-four roles are specified in ADR-0002 and proposed in ADR-0015. None are built.
-- **Implemented Python:** `ag3nt24_contracts.canonical` only — the canonical serializer and evidence hash (P1-10). No models, no graph, no control plane.
-- **What is in this repository today:** design documents only. The prior-phase a-24 JavaScript moved to `docs/prior-art/a-24/` on 2026-09-05 and is ended, not built and not imported (ADR-0014). Its slot order does not apply here.
-- **Open decisions:** ADR-0017, ADR-0018, ADR-0019. ADR-0014, ADR-0015 and ADR-0016 are ruled.
+- **Implemented agents: 0.** Twenty-four roles are specified in ADR-0002 and the roster is frozen in ADR-0015. None are built. There is no behavior in them yet.
+- **Built and green:** `packages/ag3nt24_contracts` (the canonical serializer and evidence hash). The 24-slot registry, `conformance/registry.json`, and the ITF-to-rune translation, with conformance reporting `checks: 81/81`, `registry: 24/24 match`, `join: 24/24 match` and `5/5 match`.
+- **Built, being replaced:** the four COBOL gates in `kernel/`. They build with GnuCOBOL 3.2.0 on a development machine and reproduce their pinned verdicts. ADR-0028 rebuilds them in Python; the COBOL becomes the reference implementation and the differential harness fails on a one-byte disagreement. That port is module 1 and has not started.
+- **Ruled, not built:** scouts, the protocol droid, the model adapter, HADES, the frontend, and the data layer.
+- **Left over, do not build on:** `bridge/shim.js`, a Phase 3 remnant. ADR-0029 takes Node off the runtime path.
+- **Pilot target: none.** ADR-0032 removed Gunkustom.com and withdrew ADR-0019.
 
 Everything below is the design. Treat it as specification, not capability.
 
@@ -26,151 +24,182 @@ Everything below is the design. Treat it as specification, not capability.
 
 ## What Ag3nt24 is
 
-A multi-agent framework for legacy system modernization. Twenty-four domain specialists work a modernization job under one supervisor. They propose; a human signs before anything touches a live system; every signature leaves a receipt that cannot be quietly altered.
+Ag3nt24 Droid Protocol Multi-Agent Framework with Anti-Corruption Layer, a legacy AI systems modernization framework. Twenty-four pattern agents do the protocol droid work at the seam between an inherited AI estate and a modern stack. They propose, a human signs before anything changes state, and every signature leaves a receipt that cannot be quietly altered.
 
-The problem it addresses: modernization work spans more expert domains than one model call handles well, and the domains where it matters most (mainframe, OT, control systems) are the ones where a wrong write has consequences that no rollback fixes.
+**The estate it modernizes** is the AI system a business assembled between 2021 and 2026 as the field changed under it: prompt chains, RAG v1, fine-tuned models, vector stores, orchestration glue, vendor lock-ins. The failure mode is the classic legacy one. Nobody inside can establish what the system actually does, so nobody will sign off on the replacement. Ag3nt24 establishes it, certifies the data, and rebuilds behind a human-controlled boundary.
 
 ## Scope
 
-**In scope now:** the orchestrator, the gate, the receipt chain, the contracts, and the control plane. Pilot 1 has no target; see ADR-0032.
+**In scope now:** the kernel and its gates, the contracts, the registry, the scouts, the protocol droid, HADES, and the operator surfaces.
 
-**Deferred:** nothing is queued as Pilot 2; ADR-0032 dropped the mock mainframe stack. Military and defense systems integration is out of scope and has no design accommodation.
+**Deferred:** nothing is queued as a second pilot; ADR-0032 dropped the mock mainframe stack. Military and defense systems integration is out of scope and has no design accommodation.
 
 ## System context
 
+```mermaid
+flowchart TD
+    estate["Inherited AI estate<br/>prompt chains, RAG v1, fine-tuned models,<br/>vector stores, orchestration glue"]
+    scouts["Scouts, deterministic and read-only<br/>ADR-0024, ADR-0030"]
+    acl_in["Kernel, the ACL, inbound<br/>provenance_validate, tenet_gate<br/>ADR-0023, ADR-0028"]
+    droid["Protocol droid<br/>selects the team from the 24-slot registry<br/>ADR-0002, ADR-0015, ADR-0026"]
+    team["The 24 pattern agents<br/>findings and proposals"]
+    acl_out["Kernel, the ACL, outbound<br/>tenet_gate, rune_authorize"]
+    hades["HADES, the control room<br/>human gate, receipt writer, prompt store,<br/>ETL sort, telemetry, legacy-AI channel<br/>ADR-0027"]
+    human(["Human operator<br/>signs here, and only here"])
+    db[("db, PostgreSQL<br/>run state, prompts, telemetry,<br/>receipts in their own schema")]
+
+    estate -. read-only contact .-> scouts
+    scouts -- scout report --> acl_in
+    acl_in -- cleared report --> droid
+    droid --> team
+    team -- proposal --> acl_out
+    acl_out -- cleared proposal --> hades
+    human --- hades
+    hades -- signed change --> estate
+    hades --- db
 ```
-              ┌──────────────────────────┐
-   Human  ───▶│  Dashboard (read-only)   │
-   operator   └────────────┬─────────────┘
-                           │ HTTPS
-              ┌────────────▼─────────────┐
-              │  Control-plane API       │   FastAPI + Pydantic, Python 3.13
-              │  (ADR-0010, ADR-0017)    │   gate decisions, receipts, runs, cost
-              └──┬──────────────────┬────┘
-                 │                  │
-        gate     │                  │  read-only
-        decision │                  │
-              ┌──▼──────────────────▼────┐
-              │  Agent runtime           │   AgentCore Runtime
-              │  LangGraph StateGraph    │   24 nodes, 1 supervisor
-              │  (ADR-0003)              │   Chon-Ji node on Strands SDK
-              └──┬──────────────────┬────┘
-                 │                  │
-       MCP       │                  │  state / memory / telemetry
-              ┌──▼───────────┐   ┌──▼──────────────────────────┐
-              │  AgentCore   │   │  Aurora │ S3 │ KB │ receipts │
-              │  Gateway     │   │  (ADR-0006)                  │
-              └──┬───────────┘   └──────────────────────────────┘
-                 │
-       ┌─────────▼──────────────────────────────┐
-       │ Target systems                          │
-       │ Pilot 1 target: unruled                 │
-       │ Modbus / OPC-UA / MQTT / TN3270 (later) │
-       └─────────────────────────────────────────┘
-```
+
+Two gates, two words: the kernel is the ACL, HADES holds the gate. The kernel logs and writes no receipts. Clearing the kernel is never authorization to act.
 
 ## Components
 
-### Agent runtime
+### Kernel, the Anti-Corruption Layer
 
-LangGraph `StateGraph` as root supervisor. All 24 roles are nodes. The supervisor owns routing, checkpointing, and interrupts.
+Four gates, `tenet_gate`, `provenance_validate`, `rune_authorize` and `rune_rotation`, at the boundary between the inherited estate and the framework. Every crossing passes through it in both directions (ADR-0023). Inbound, a scout report is invisible to the protocol droid until `provenance_validate` accepts its envelope and `tenet_gate` returns `DECISION=A`. Outbound, every proposal clears `tenet_gate`, and `rune_authorize` confirms the pattern holds the requested capability on the current rotation table. A pattern that does not is denied `NOT_AUTHORIZED_FOR_TODAY`, logged and escalated in HADES.
 
-Chon-Ji (slot 01, Systems Architecture and OT) is built on the Strands Agents SDK behind the same node interface as everything else, because discovery on an unmapped system is model-first work and a fixed edge cannot express it (ADR-0003).
+Deterministic by construction: gates run on slot indices, so the same input returns the same verdict every time. No sampling, no drift.
 
-Every node implements one contract (ADR-0016). A node reads only the state channels its `AgentSpec` declares, returns findings and proposals, and never executes a control-affecting tool call itself. One generic adapter enforces the projection for all 24, so a node writing an undeclared channel fails the run at that node rather than corrupting state quietly.
+The gates ship as `ag3nt24_kernel`, Python, imported by the API service. The COBOL stays in `kernel/` as the reference implementation, still building with GnuCOBOL 3.2.0 on a development machine, never deployed (ADR-0028). `npm run conform` runs both and fails on any disagreement.
 
-Findings carry provenance — `observed`, `inferred`, or `reported` — and no confidence score. A human at the gate can check how a node came to know something; they cannot check `0.87`. Routing belongs to the supervisor alone: a node never requests a peer.
+The boundary is enforced by an import rule rather than a process boundary (ADR-0029). `ag3nt24_kernel` imports nothing from `core` or `hades`, exposes only the gate functions, and a test asserts it. That is a weaker guarantee than a separate service, recorded deliberately: if the boundary ever has to be provable to an outside auditor, the kernel goes back behind its own service and nothing else changes.
 
-### Control plane
+### Scouts
 
-FastAPI and Pydantic, Python 3.13, deployed separately from the runtime. Serves the dashboard, gate decisions, receipt queries, run lifecycle, cost. A control-plane outage does not stop the graph, and a graph failure does not stop the dashboard showing what happened (ADR-0010). Routes are ADR-0017, open.
+Deterministic crawlers, not personas, and not among the 24 (ADR-0024). They are the only component allowed to touch the estate before the ACL, and everything they produce crosses the ACL before any pattern sees it. Read-only. No model call by default; a scout that needs one declares it in its spec and the call is logged. The first scout covers the modern AI estate: HTTP and OpenAPI surface, prompt file discovery, vector-store and model configuration, orchestration entry points.
+
+One scout report per contact, findings tagged `observed` and never stronger, one evidence hash per finding.
+
+### Protocol droid and the 24
+
+The droid reads the cleared report, selects the patterns the operation needs from the registry, activates them with their charters, and hands the report to the team. The team returns findings and proposals.
+
+Each of the 24 is bound to one pattern of the ITF Chang Hon syllabus, which gives it a discipline attribute, an operational duty, a stance and a failure mode. The registry refuses to load if any pattern lacks an agent, any agent lacks a pattern, or any capability is claimed twice. That load-time validation is what "24-slot pattern registry" means.
+
+Findings carry provenance, `observed`, `inferred` or `reported`, and no confidence score. A human at the gate can check how an agent came to know something; they cannot check `0.87`.
+
+There is no twenty-fifth agent. A new capability is a configuration of an existing pattern.
+
+### HADES
+
+The human's only surface (ADR-0027). It holds the gate and the receipt writer, the prompt store including the 24 charters, human interaction with the ETL pipeline, all telemetry, and the legacy-AI channel.
+
+The Data Lake sort is `good | bad | messy | work-data | new`. Only `bad` reaches the Human Authorized Data Eradication Sequence, and only through a signature. There is no auto-eradication path. Eradication is the most control-affecting action in the system and takes the ordinary path for one: a `GateRequest`, a human signature, one `Receipt`, then execution.
+
+ADR-0031 proposes durable in-database orchestration for the ingest and sort, with the gate terminating a durable run and a signature starting a new one. It is proposed, not ruled, and no code depends on it.
 
 ### Contracts package
 
-`ag3nt24_contracts`, imported by both services. Four Pydantic models: `AgentSpec`, `GraphState`, `GateRequest`, `Receipt` (ADR-0011). Field-level definitions are outstanding and have to be restated before implementation.
+`ag3nt24_contracts`, the only package both services may import (ADR-0010). Six Pydantic models: `AgentSpec`, `GraphState`, `GateRequest`, `Receipt` (ADR-0011), and `ScoutFinding`, `ScoutReport` (ADR-0030). Strict mode, `schema_version` on each, frozen after construction where the model is evidence. A breaking version bump takes its own ADR.
 
-### The ACL, HADES, and the Data Lake (ADR-0020, no code yet)
+### Containers
 
-Three named subsystems with a fixed home and no implementation. Pilot 1 does not build them.
+Three (ADR-0029).
 
-The **ACL** is a deterministic rules engine on data crossing out of the core pipeline: go or no-go, structured reason, logged. It is not the human gate. It runs first and upstream, it makes no model call, and clearing it is never authorization to act. ACL decisions do not write receipts; the chain records human decisions only.
+| Container | Contents |
+|---|---|
+| `api` | Python 3.13, FastAPI. HADES, the protocol droid, the scouts, the model adapter, and the kernel gates as an imported package |
+| `web` | The built React bundle, served statically. A client of the API holding no business rules |
+| `db` | PostgreSQL. Run state, prompts, telemetry, and receipts in their own schema |
 
-**HADES** is data-only: Data Lake sizing and governance, and the Human Authorized Data Eradication Sequence. Eradication is the most control-affecting action in the system and takes the ordinary path for one — `GateRequest`, a human signature, one `Receipt`, then execution. The append-only ledger it needs is the receipt chain; no second store is built. There is no auto-eradication path.
+Node is a frontend build dependency only. It does not appear in a runtime image.
 
-The **Data Lake sort taxonomy** is `good | bad | messy | work-data | new`. Only `bad` reaches the eradication sequence. A client Data Lake is a target system, not a fifth Ag3nt24 store; ADR-0006 still says four.
+### Model adapter
+
+One request and response shape for any provider: Anthropic, OpenAI-compatible endpoints, and local runtimes, chosen by environment. No provider-specific type crosses the adapter. Provider quality differences are the adapter's problem and get measured, never assumed.
 
 ### Tools
 
-All tool access is MCP through AgentCore Gateway. No node opens a socket to a target directly. Existing open-source MCP servers for Modbus, OPC-UA, and MQTT; writing one from scratch needs its own ADR (ADR-0005).
+MCP, hosted by the API service, with no gateway product in between. Each MCP server declares whether it is read-only or control-affecting. No agent opens a socket to a target directly.
 
-Tool output is untrusted input. A device response, a mainframe screen, or a fetched page is data, never an instruction to the agent reading it.
+Tool output is untrusted input. A fetched page, an API response or a prompt file found on the estate is data, never an instruction to the agent reading it.
 
 ## The run flow
 
-1. A run starts with a task, a pilot target, and a budget.
-2. The supervisor routes to the roles the task needs.
-3. Each node returns findings and proposals against its declared slice of state.
-4. Tong-Il (24) reconciles cross-domain findings into a proposal.
-5. A control-affecting proposal hits a LangGraph interrupt. State is checkpointed, a `GateRequest` is written, the run stays `active` and waiting.
-6. A human approves or denies through the control plane. Exactly one `Receipt` is written, hash-chained to its predecessor.
-7. On approval, the run resumes and the tool call executes through Gateway. On denial, the run ends with the reason recorded.
+1. A run starts with a task, a target and a budget.
+2. A scout makes read-only contact with the estate and emits a scout report.
+3. The report crosses the kernel inbound. A failed gate denies, records why, and escalates to a named person.
+4. The protocol droid reads the cleared report and selects the team from the registry.
+5. The team returns findings and proposals against its declared slice of state.
+6. A control-affecting proposal crosses the kernel outbound, then lands in HADES as a `GateRequest`. The run checkpoints and waits.
+7. A human approves or denies in HADES. Exactly one `Receipt` is written, hash-chained to its predecessor.
+8. On approval the run resumes and the change executes. On denial the run ends with the reason recorded.
 
-Read-only discovery does not gate. Everything that writes, mutates, deploys, configures, or commands does (ADR-0008).
+Read-only discovery does not gate. Everything that writes, mutates, deploys, configures or commands does (ADR-0008).
+
+Verdicts are evidence. Human signatures are authority. No agent carries ledger-write authority.
 
 ## Storage
 
-Four concerns, four stores, never collapsed (ADR-0006).
+Four concerns, never collapsed (ADR-0006 as amended by ADR-0025).
 
 | Concern | Store |
 |---|---|
-| MD-spec charters, human-authored source of truth | S3 versioned, mirrored in Git |
-| Graph and session state (checkpointer) | Aurora PostgreSQL |
-| Vector / RAG per domain | Bedrock Knowledge Bases over S3 Vectors |
-| Audit receipts, append-only and hash-chained | DynamoDB or S3 Object Lock |
+| Charters, human-authored source of truth | This repository, in Git |
+| Run state, prompts, telemetry | `db`, PostgreSQL |
+| Vector and RAG per domain | A local vector store, derived data; losing one costs a rebuild |
+| Audit receipts, append-only and hash-chained | Their own schema in `db`, with a write credential held only by the gate route |
 
-The receipt store shares no database, schema, or write credential with graph state. Vector indexes are derived data: losing one costs a rebuild.
+The receipt store shares no schema and no write credential with run state.
 
 ## Prompt lifecycle
 
-The Markdown charter in this repository is authored and reviewed as a diff. Bedrock Prompt Management holds the deployed artifact, and each node loads its prompt by ARN pinned to a version.
+The Markdown charter in this repository is authored and reviewed as a diff. The HADES prompt store holds the deployed artifact, and each agent loads its prompt pinned to a version.
 
-Publishing Markdown into Prompt Management is a manual gate. No auto-deploy from a merged file to a live prompt. A missing prompt ARN is a hard failure with no inline fallback (ADR-0007).
+Publishing a charter into the store is a manual human step with the source commit SHA recorded on the version. No auto-deploy from a merged file to a live prompt. A missing prompt version is a hard failure with no inline fallback.
 
 ## Telemetry and cost
 
-One pipeline. Tagged with the agent ID at the node adapter before anything is emitted. AgentCore Observability into CloudWatch and X-Ray. Group view aggregates the tag, individual view filters it, cost comes from Cost Explorer on the same tag (ADR-0009). Format and the per-agent cost mechanism are ADR-0018, open.
+One pipeline, tagged with the ITF slot at the source before anything is emitted, OpenTelemetry format so any backend can read it, landing in HADES. Group view aggregates the tag, individual view filters it. The format and the per-agent cost mechanism are ADR-0018, still open.
 
-The dashboard is read-only against agent state. Every action it offers is a control-plane call that goes through AgentCore Policy exactly like an agent's own tool call. No privileged side door.
+The operator surfaces are read-only against agent state. Every action they offer is an API call through the same path an agent's own call takes. No privileged side door.
 
 ## Security and trust boundaries
 
 | Boundary | Control |
 |---|---|
-| Human to control plane | AgentCore Identity; per-user identity so a receipt names a person, not a shared account |
-| Control plane to receipt store | Write only on the gate decision path; read-only credentials elsewhere |
-| Node to target system | MCP through Gateway only; control-affecting tools gated |
-| Tool output to node reasoning | Treated as untrusted data, never as instruction |
-| Charter to running prompt | Manual publish gate, source commit SHA recorded on the prompt version |
+| Human to API | Per-user identity, so a receipt names a person and not a shared account |
+| API to receipt schema | Write only on the gate decision path; read-only credentials everywhere else |
+| Estate to framework | The kernel, in both directions, on every crossing |
+| Scout to estate | Read-only. A scout that needs write access is a different component and takes an ADR |
+| Agent to target system | MCP only, control-affecting tools gated |
+| Tool output to agent reasoning | Treated as untrusted data, never as instruction |
+| Charter to running prompt | Manual publish gate, source commit SHA recorded on the version |
 
-Signing keys for receipts are production secrets with a rotation policy. Never in code, config, or logs.
+Signing keys for receipts are production secrets with a rotation policy. Never in code, config or logs.
 
 ## Constraints this design accepts
 
-- **AWS is not swappable.** No portability abstraction gets written (ADR-0004).
+- **No vendor dependency to run.** Anyone with Docker can run the kernel, the registry and a scout. A cloud target takes its own ADR (ADR-0025).
 - **Throughput is bounded by human review.** That is the intended trade (ADR-0008).
 - **One person operates this.** Anything needing a rota does not get built (ADR-0013).
 - **Twenty-four is fixed.** A new domain merges into an existing role or forces a merge elsewhere (ADR-0002).
+- **The import rule is weaker than a process boundary.** Accepted knowingly, reversible without redesign (ADR-0029).
 
 ## Language rules for this project
 
-"Autonomous" is not used. Agents propose, humans sign. A line of work is `active` or `ended`, never "paused." Role definitions carry industry-standard domain naming and no personal or business philosophy. No capability claim without something real behind it.
+"Autonomous" is not used. Agents propose, humans sign. A line of work is `active` or `ended`, never "paused." Never "24 implemented agents"; the 24 are registered, not implemented. Role definitions carry industry-standard domain naming and no personal or business philosophy. No services, no pricing. No capability claim without something real behind it.
 
 ## Decision index
 
-**Accepted:** ADR-0001, 0002, 0006, 0008, 0010 through 0016, 0020 through 0027.
-**Superseded by ADR-0025:** ADR-0003, 0004, 0005, 0007, 0009.
-**Open, needs a ruling:** ADR-0017 (route list), ADR-0018 (tagging), ADR-0019 (Pilot 1 scope).
+**Accepted:** ADR-0001, 0002, 0006, 0008, 0010, 0011, 0013, 0014, 0015, 0016, 0020 through 0030, 0032.
+**Superseded:** ADR-0003, 0004, 0005, 0007, 0009 by ADR-0025. ADR-0012 by ADR-0032.
+**Withdrawn:** ADR-0019 by ADR-0032.
+**Proposed, not ruled:** ADR-0031 (durable orchestration for the HADES sort).
+**Open, needs a ruling:** ADR-0017 (route list), ADR-0018 (tagging scheme).
 
-ADR-0020 reconciles the 2026-09-04 HADES build prompts with this design: the ACL, HADES, and the Data Lake sort taxonomy become named subsystems, and Talk/Protocol/Droid/Report becomes vocabulary for the run flow above rather than a second pipeline.
+One known defect in an accepted record: ADR-0021 states the kernel binary is reproducible from its build manifest. The executable hashes are not reproducible on this toolchain; the source hashes are stable and do match. That claim needs narrowing or withdrawing.
 
-Full text in [docs/adr/](../adr/). Build sequencing in [docs/plan/2026-09-09-ag3nt24-hades-plan.md](../plan/2026-09-09-ag3nt24-hades-plan.md).
+Full text in [docs/adr/](../adr/). Build sequencing in [docs/plan/](../plan/).
+
+---
+LAHA — Love All Humans Always.
