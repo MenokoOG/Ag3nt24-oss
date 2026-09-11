@@ -1,6 +1,6 @@
 # ADR-0019: Pilot 1 first task scope on Gunkustom.com
 
-- Status: **Open. Needs a ruling from Lawrence**
+- Status: **Withdrawn by ADR-0032.** Never ruled. Scoped against a target that is not happening and a stack that ADR-0025 superseded.
 - Date: 2026-08-28
 - Related: ADR-0008, ADR-0012, ADR-0015
 - Blocks: the Pilot 1 task breakdown past step 8
