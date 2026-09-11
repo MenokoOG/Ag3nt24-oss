@@ -25,7 +25,7 @@ Design, with early implementation. Nothing here is production capability.
 
 What is built and what is designed are tracked separately in [ROADMAP.md](ROADMAP.md), and that list changes in the same commit as the thing it describes. The decision history is in [CHANGELOG.md](CHANGELOG.md) and [docs/adr/](docs/adr/).
 
-Two decisions are open rather than settled, and both are in the tree: [ADR-0033](docs/adr/0033-cedar-replaces-the-cobol-gates-as-the-boundary-acl.md) on which engine enforces the boundary, and [ADR-0031](docs/adr/0031-durable-orchestration-for-the-hades-sort.md) on orchestration for the HADES sort.
+Two decisions are open rather than settled, and both are in the tree: [ADR-0033](docs/adr/0033-cedar-as-the-boundary-acl.md) on which engine enforces the boundary, and [ADR-0031](docs/adr/0031-durable-orchestration-for-the-hades-sort.md) on orchestration for the HADES sort.
 
 ## Design in brief
 
@@ -65,7 +65,7 @@ Prerequisites: Python 3.13 with [uv](https://docs.astral.sh/uv/).
 uv sync && uv run pytest  # the contracts package
 ```
 
-The boundary gates arrive with module 1 as `packages/ag3nt24_kernel`, Python, measured against the pinned verdicts in `conformance/expected.json` ([ADR-0034](docs/adr/0034-retire-the-cobol-reference-implementation.md)). Those pins define correct behavior and are not adjusted to make a run pass. Python is the only implementation in the repository.
+The boundary gates arrive with module 1 as `packages/ag3nt24_kernel`, Python, measured against the pinned verdicts in `conformance/expected.json` ([ADR-0034](docs/adr/0034-retire-the-reference-implementation.md)). Those pins define correct behavior and are not adjusted to make a run pass. Python is the only implementation in the repository.
 
 ## Contributing
 

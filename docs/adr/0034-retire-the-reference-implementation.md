@@ -1,4 +1,4 @@
-# ADR-0034: Retire the COBOL reference implementation
+# ADR-0034: Retire the carried reference implementation
 
 - Status: **Accepted. Ruled 2026-09-11.**
 - Date: 2026-09-11

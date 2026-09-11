@@ -66,7 +66,7 @@ Nothing in this repository is production capability. **Implemented agents: 0.** 
 
 **There is no benchmark.** No ship date, no waitlist, no capability claim ahead of the code. What is built and what is designed are labelled separately in [ROADMAP.md](../ROADMAP.md), and the as-built list changes in the same commit as the thing it describes.
 
-The boundary engine is under an open decision, [ADR-0033](adr/0033-cedar-replaces-the-cobol-gates-as-the-boundary-acl.md). The properties above are ruled. The engine that enforces them is being chosen in the open.
+The boundary engine is under an open decision, [ADR-0033](adr/0033-cedar-as-the-boundary-acl.md). The properties above are ruled. The engine that enforces them is being chosen in the open.
 
 ## Built so far
 
