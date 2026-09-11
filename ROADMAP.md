@@ -34,7 +34,7 @@ Human gate, receipt chain, prompt store, ETL sort `good | bad | messy | work-dat
 
 ## Phase 7: first run. Designed.
 
-Gunkustom.com read-only per ADR-0012 and ADR-0019 (open).
+No target. ADR-0032 removed Gunkustom.com as the pilot target and a replacement is unruled.
 
 ## What is not on this roadmap
 

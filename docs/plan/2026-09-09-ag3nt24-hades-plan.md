@@ -56,7 +56,7 @@ Two labels, as in the ROADMAP. Done means it is in this repository with a test o
 
 **Phase 6. HADES.** Gate route, receipt chain, prompt store, ETL sort with the five buckets, telemetry tagged by ITF slot, the legacy-AI channel. Eradication takes the ordinary path: gate request, signature, receipt, then execution. No auto path.
 
-**Phase 7. First run.** Gunkustom.com read-only per ADR-0012, Option A of ADR-0019 once that ADR is ruled. Zero writes, one gate, one receipt.
+**Phase 7. First run.** No target. ADR-0032 removed Gunkustom.com and withdrew ADR-0019. Zero writes, one gate, one receipt, against a target still to be ruled.
 
 Phases 2 and 3 are one pull request each. Phases 4 through 6 are each several pull requests. No dates are promised and nothing is cited as capability before the Production Definition of Done.
 

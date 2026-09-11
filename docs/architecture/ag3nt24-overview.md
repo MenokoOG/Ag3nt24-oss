@@ -32,9 +32,9 @@ The problem it addresses: modernization work spans more expert domains than one 
 
 ## Scope
 
-**In scope now:** the orchestrator, the gate, the receipt chain, the contracts, the control plane, and Pilot 1 against Gunkustom.com.
+**In scope now:** the orchestrator, the gate, the receipt chain, the contracts, and the control plane. Pilot 1 has no target; see ADR-0032.
 
-**Deferred:** the mock mainframe stack (Pilot 2, ADR-0012). Military and defense systems integration is out of scope and has no design accommodation.
+**Deferred:** nothing is queued as Pilot 2; ADR-0032 dropped the mock mainframe stack. Military and defense systems integration is out of scope and has no design accommodation.
 
 ## System context
 
@@ -64,7 +64,7 @@ The problem it addresses: modernization work spans more expert domains than one 
                  │
        ┌─────────▼──────────────────────────────┐
        │ Target systems                          │
-       │ Gunkustom.com (Pilot 1)                 │
+       │ Pilot 1 target: unruled                 │
        │ Modbus / OPC-UA / MQTT / TN3270 (later) │
        └─────────────────────────────────────────┘
 ```
