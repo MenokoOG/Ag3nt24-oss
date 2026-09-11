@@ -16,7 +16,7 @@ Read the system first, then choose.
 
 ## Status
 
-Honest, as of 2026-09-09. Nothing in this repository is production capability.
+**Design and early implementation. Nothing in this repository is production capability.**
 
 - **Phase 0, rulings: done 2026-09-09.** The kernel is the boundary ACL (ADR-0023), scouts are a deterministic layer under the 24 (ADR-0024), the stack is Docker and model-agnostic (ADR-0025), ITF slot order with a rune translation (ADR-0026), HADES is the control room (ADR-0027), the 24-role roster is frozen (ADR-0015). The plan is [docs/plan/](docs/plan/2026-09-09-ag3nt24-hades-plan.md).
 
