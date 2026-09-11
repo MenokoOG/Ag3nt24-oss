@@ -45,9 +45,9 @@ A threat model for the kernel and its boundaries is in [docs/security/](docs/sec
 
 ```
 packages/          ag3nt24_contracts, Python 3.13: the canonical serializer, evidence hash, and tests
-kernel/            the four gates as carried source, kept as the reference the Python port is measured against (ADR-0028)
-scripts/           build-kernel.js, rebuilds the reference gates and writes the manifest
-bridge/            slot translation and the conformance bridge
+kernel/            the retiring reference gates, removed with module 1 (ADR-0034)
+scripts/           build tooling for the retiring reference gates
+bridge/            slot translation and the conformance bridges
 conformance/       run.js, expected.json and registry.json: the 24 slots and the pinned verdicts
 prior-art/a24-v1/  the ended v1.0.0 reference, read-only; conformance reads its scenarios
 docs/overview.md   the official overview, start here
@@ -61,7 +61,7 @@ site/              the project site
 
 ## Run it
 
-Prerequisites: Node 24, Python 3.13 with [uv](https://docs.astral.sh/uv/), and GnuCOBOL 3.2.0 with `cobc` on PATH for the reference gates.
+Prerequisites: Node 24, Python 3.13 with [uv](https://docs.astral.sh/uv/), and, until module 1 lands, GnuCOBOL 3.2.0 with `cobc` on PATH for the retiring reference gates.
 
 ```
 npm run build:kernel      # rebuild the reference gates
@@ -71,7 +71,7 @@ uv sync && uv run pytest  # the Python contracts package
 
 A changed verdict means a port is wrong. Pinned expectations are not adjusted to make a run pass.
 
-ADR-0028 rebuilds the gates in Python, which becomes the only implementation deployed. That work is in progress. When it lands, `npm run conform` runs both implementations and fails on a one-byte disagreement, and GnuCOBOL becomes a development and audit dependency only.
+[ADR-0034](docs/adr/0034-retire-the-cobol-reference-implementation.md) retires the reference gates. Module 1 replaces them with `packages/ag3nt24_kernel` in Python, measured against the pins in `conformance/expected.json`, and removes the GnuCOBOL prerequisite with them. Python is then the only implementation in the repository.
 
 ## Contributing
 
