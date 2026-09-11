@@ -22,7 +22,7 @@ Companion tags, all on the same records:
 |---|---|---|
 | `ag3nt24:run-id` | ULID | Correlate every span, receipt, and cost record in one run |
 | `ag3nt24:component` | `control-plane`, `agent-runtime`, `gateway` | Split infrastructure cost from agent cost |
-| `ag3nt24:pilot` | `gunkustom`, `mock-mainframe` | Cost and telemetry per pilot |
+| `ag3nt24:pilot` | one slug per pilot, assigned when a target is named (ADR-0032) | Cost and telemetry per pilot |
 | `ag3nt24:env` | `dev`, `prod` | Standard environment split |
 
 ## Where the tag is set

@@ -1,6 +1,6 @@
 # ADR-0012: Pilot order is Gunkustom.com, then the mock mainframe stack; defense work is out of scope
 
-- Status: Accepted
+- Status: **Superseded by ADR-0032.** Gunkustom.com is not a pilot target and the mock mainframe stack is dropped. The deferral of military and defense systems integration carries forward.
 - Date: 2026-08-28
 - Deciders: Lawrence Jefferson II
 - Related: ADR-0019 (Pilot 1 first task scope)
