@@ -1,4 +1,4 @@
-# ADR-0033: Cedar replaces the COBOL gates as the Anti-Corruption Layer
+# ADR-0033: Cedar as the Anti-Corruption Layer
 
 - Status: **Proposed. Needs a ruling from Lawrence.**
 - Date: 2026-09-11
