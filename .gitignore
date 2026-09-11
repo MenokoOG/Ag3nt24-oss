@@ -28,3 +28,12 @@ __pycache__/
 # OS
 Thumbs.db
 .DS_Store
+
+# Working files. Not needed to read, build or run anything here.
+# Session prompts, agent scratch and local assistant config stay on the
+# machine that made them (ADR-0022: private working files do not travel).
+Claude outputs/
+docs/plan/*next-session*.md
+.claude/
+.github/instructions/
+agent-memory/
